@@ -4,6 +4,7 @@ const { mat4 } = glMatrix;
 const toRad = glMatrix.glMatrix.toRadian;
 
 const shapes = [];
+const lines = [];
 let gl = null;
 
 const locations = {
@@ -55,6 +56,8 @@ window.onload = async () => {
     shapes.push(createShape());
     shapes[1].translate([-0.5, 0, 0]);
 
+    lines.push(createGlobalCoordinateSystem());
+
     /* --------- Attach event listener for keyboard events to the window --------- */
     window.addEventListener("keydown", (event) => {
         /* ----- this event contains all the information you will need to process user interaction ---- */
@@ -88,6 +91,10 @@ function render(now) {
         /* --------- scale rotation amount by time difference --------- */
         shape.rotate(1 * delta, [0, 1, 1]);
         shape.draw();
+    });
+
+    lines.forEach( lines =>{
+        lines.drawLine();
     });
 
     requestAnimationFrame(render)
@@ -171,5 +178,43 @@ function createShape() {
     cube.initData(vertices, colors)
 
     return cube;
+}
+
+function createGlobalCoordinateSystem(){
+    /* --------- define vertex positions & colors --------- */
+    /* -------------- 2 vertices per line ------------- */
+    const vertices = [
+        // X, Y, Z, W
+        -20.0, 0.0, 0.0, 1.0,   // X-Start
+        20.0, 0.0, 0.0, 1.0,    // X-End
+        0.0, 20.0, 0.0, 1.0,    // Y-Start
+        0.0, -20.0, 0.0, 1.0,   // Y-End
+        0.0, 0.0, 20.0, 1.0,    // Z-Start
+        0.0, -0.0, -20.0, 1.0,  // Z-End
+    ];
+
+    const colorData = [
+        [1.0, 0.0, 0.0, 1.0],    // X-Start
+        //[1.0, 0.0, 0.0, 1.0],    // X-End
+        [0.0, 1.0, 0.0, 1.0],    // Y-Start
+        //[0.0, 1.0, 0.0, 1.0],    // Y-End
+        [0.0, 0.0, 1.0, 1.0],    // Z-Start
+        //[0.0, 0.0, 1.0, 1.0],    // Z-End
+    ];
+
+    const colors = [];
+
+    /* --------- add one color per point, so 2 times for each line --------- */
+    colorData.forEach(color => {
+        for (let i = 0; i < 2; ++i) {
+            colors.push(color);
+        }
+    });
+
+    /* --------- create shape object and initialize data --------- */
+    const globalCoordinateSystemLines = new Shape();
+    globalCoordinateSystemLines.initData(vertices, colors)
+
+    return globalCoordinateSystemLines;
 }
 
