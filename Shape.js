@@ -11,6 +11,9 @@ class Shape {
 
         /* --------- initialize transformation matrix --------- */
         this.transformationMatrix = mat4.create();
+
+        /* --------- initialize scaling matrix --------- */
+        //this.scalingMatrix = mat4.create();
     }
 
     initData(vertices, colors) {
@@ -33,10 +36,14 @@ class Shape {
 
         /* --------- combine view and model matrix into modelView matrix --------- */
         const modelViewMatrix = mat4.create();
+        //mat4.mul(modelViewMatrix, viewMatrix, this.scalingMatrix);
+
         mat4.mul(modelViewMatrix, viewMatrix, this.transformationMatrix);
+        
 
         /* --------- send modelView matrix to GPU --------- */
         gl.uniformMatrix4fv(locations.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
+
 
         /* --------- draw the shape --------- */
         gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 4);
@@ -82,6 +89,10 @@ class Shape {
             mat4.rotate(rotationMatrix, rotationMatrix, angle, axes);
             mat4.mul(this.transformationMatrix, rotationMatrix, this.transformationMatrix)
         */
+    }
+
+    scale(vector){
+        mat4.scale(this.transformationMatrix, this.transformationMatrix, vector);
     }
 
     translate(vector) {

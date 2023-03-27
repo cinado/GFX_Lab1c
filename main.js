@@ -6,6 +6,8 @@ const toRad = glMatrix.glMatrix.toRadian;
 const shapes = [];
 const lines = [];
 let gl = null;
+const DESCREASE_FACTOR = 0.9;
+const INCREASE_FACTOR = 1.1;
 
 const locations = {
     attributes: {
@@ -36,6 +38,7 @@ window.onload = async () => {
     locations.attributes.vertexLocation = gl.getAttribLocation(program, "vertexPosition");
     locations.attributes.colorLocation = gl.getAttribLocation(program, "vertexColor");
     locations.uniforms.modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
+    locations.uniforms.scalingMatrix = gl.getUniformLocation(program, "scalingMatrix");
     locations.uniforms.projectionMatrix = gl.getUniformLocation(program, "projectionMatrix");
 
     /* --------- create & send projection matrix --------- */
@@ -47,7 +50,7 @@ window.onload = async () => {
     mat4.lookAt(viewMatrix, [0, 0, 2], [0, 0, 0], [0, 1, 0]);
 
     /* --------- translate view matrix --------- */
-    mat4.translate(viewMatrix, viewMatrix, [-0.5, 0, 0])
+    //mat4.translate(viewMatrix, viewMatrix, [-0.5, 0, 0])
 
     /* --------- create 2 cubes and translate them away from each other --------- */
     shapes.push(createShape());
@@ -62,6 +65,27 @@ window.onload = async () => {
     window.addEventListener("keydown", (event) => {
         /* ----- this event contains all the information you will need to process user interaction ---- */
         console.log(event)
+
+        switch (event.key) {
+            case 'a':
+                shapes[0].scale([DESCREASE_FACTOR,1,1]);
+                break;
+            case 'A':
+                shapes[0].scale([INCREASE_FACTOR,1,1]);
+                break;
+            case 'b':
+                shapes[0].scale([1,DESCREASE_FACTOR,1]);
+                break;
+            case 'B':
+                shapes[0].scale([1,INCREASE_FACTOR,1]);
+                break;
+            case 'c':
+                shapes[0].scale([1,1,DESCREASE_FACTOR]);
+                break;
+            case 'C':
+                shapes[0].scale([1,1,INCREASE_FACTOR]);
+                break;
+        }
     })
 
     /* --------- Load some data from external files - only works with an http server --------- */
@@ -89,11 +113,11 @@ function render(now) {
 
     shapes.forEach(shape => {
         /* --------- scale rotation amount by time difference --------- */
-        shape.rotate(1 * delta, [0, 1, 1]);
+        //shape.rotate(1 * delta, [0, 1, 1]);
         shape.draw();
     });
 
-    lines.forEach( lines =>{
+    lines.forEach(lines => {
         lines.drawLine();
     });
 
@@ -180,7 +204,7 @@ function createShape() {
     return cube;
 }
 
-function createGlobalCoordinateSystem(){
+function createGlobalCoordinateSystem() {
     /* --------- define vertex positions & colors --------- */
     /* -------------- 2 vertices per line ------------- */
     const vertices = [
