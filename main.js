@@ -9,6 +9,16 @@ let gl = null;
 const DESCREASE_FACTOR = 0.9;
 const INCREASE_FACTOR = 1.1;
 
+const SINGLE_OBJECT_SELECTED_MODE = 1;
+const ALL_OBJECTS_SELECTED_MODE = 2;
+const X_AXIS_VECTOR = [1,0,0];
+const Y_AXIS_VECTOR = [0,1,0];
+const Z_AXIS_VECTOR = [0,0,1];
+const ROTATION_ANGLE = toRad(3);
+
+let selectedObject = null;
+let currentMode = ALL_OBJECTS_SELECTED_MODE;
+
 const locations = {
     attributes: {
         vertexLocation: null,
@@ -66,26 +76,62 @@ window.onload = async () => {
         /* ----- this event contains all the information you will need to process user interaction ---- */
         console.log(event)
 
-        switch (event.key) {
-            case 'a':
-                shapes[0].scale([DESCREASE_FACTOR,1,1]);
-                break;
-            case 'A':
-                shapes[0].scale([INCREASE_FACTOR,1,1]);
-                break;
-            case 'b':
-                shapes[0].scale([1,DESCREASE_FACTOR,1]);
-                break;
-            case 'B':
-                shapes[0].scale([1,INCREASE_FACTOR,1]);
-                break;
-            case 'c':
-                shapes[0].scale([1,1,DESCREASE_FACTOR]);
-                break;
-            case 'C':
-                shapes[0].scale([1,1,INCREASE_FACTOR]);
-                break;
+        if (event.key.match(/[0-9]/)) {
+            if (event.key === 0) {
+                currentMode = ALL_OBJECTS_SELECTED_MODE;
+            } else {
+                currentMode = SINGLE_OBJECT_SELECTED_MODE;
+                selectedObject = event.key - 1;
+            }
         }
+        if (currentMode === SINGLE_OBJECT_SELECTED_MODE) {
+            console.log("Selected object: ", selectedObject);
+
+            switch (event.key) {
+                // Scaling
+                case 'a':
+                    shapes[selectedObject].scale([DESCREASE_FACTOR, 1, 1]);
+                    break;
+                case 'A':
+                    shapes[selectedObject].scale([INCREASE_FACTOR, 1, 1]);
+                    break;
+                case 'b':
+                    shapes[selectedObject].scale([1, DESCREASE_FACTOR, 1]);
+                    break;
+                case 'B':
+                    shapes[selectedObject].scale([1, INCREASE_FACTOR, 1]);
+                    break;
+                case 'c':
+                    shapes[selectedObject].scale([1, 1, DESCREASE_FACTOR]);
+                    break;
+                case 'C':
+                    shapes[selectedObject].scale([1, 1, INCREASE_FACTOR]);
+                    break;
+                // Rotation
+                case 'i':
+                    shapes[selectedObject].rotate(-ROTATION_ANGLE, X_AXIS_VECTOR);
+                    break;
+                case 'k':
+                    shapes[selectedObject].rotate(ROTATION_ANGLE, X_AXIS_VECTOR);
+                    break;
+                case 'o':
+                    shapes[selectedObject].rotate(-ROTATION_ANGLE, Y_AXIS_VECTOR);
+                    break;
+                case 'u':
+                    shapes[selectedObject].rotate(ROTATION_ANGLE, Y_AXIS_VECTOR);
+                    break;
+                case 'l':
+                    shapes[selectedObject].rotate(-ROTATION_ANGLE, Z_AXIS_VECTOR);
+                    break;
+                case 'j':
+                    shapes[selectedObject].rotate(ROTATION_ANGLE, Z_AXIS_VECTOR);
+                    break;
+            }
+        }
+        else if (currentMode == ALL_OBJECTS_SELECTED_MODE) {
+            console.log("All objects selected");
+        }
+
     })
 
     /* --------- Load some data from external files - only works with an http server --------- */
