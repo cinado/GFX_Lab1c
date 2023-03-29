@@ -11,10 +11,12 @@ const INCREASE_FACTOR = 1.1;
 
 const SINGLE_OBJECT_SELECTED_MODE = 1;
 const ALL_OBJECTS_SELECTED_MODE = 2;
-const X_AXIS_VECTOR = [1,0,0];
-const Y_AXIS_VECTOR = [0,1,0];
-const Z_AXIS_VECTOR = [0,0,1];
+const X_AXIS_VECTOR = [1, 0, 0];
+const Y_AXIS_VECTOR = [0, 1, 0];
+const Z_AXIS_VECTOR = [0, 0, 1];
 const ROTATION_ANGLE = toRad(3);
+
+
 
 let selectedObject = null;
 let currentMode = ALL_OBJECTS_SELECTED_MODE;
@@ -57,17 +59,51 @@ window.onload = async () => {
     gl.uniformMatrix4fv(locations.uniforms.projectionMatrix, gl.FALSE, projectionMatrix);
 
     /* --------- create view matrix --------- */
-    mat4.lookAt(viewMatrix, [0, 0, 2], [0, 0, 0], [0, 1, 0]);
+    mat4.lookAt(viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
 
     /* --------- translate view matrix --------- */
     //mat4.translate(viewMatrix, viewMatrix, [-0.5, 0, 0])
 
+    /* Position for each shape */
+    const positions = [
+        [-0.95, 0.7, 0], [0, 0.7, 0], [0.95, 0.7, 0],
+        [-0.95, 0, 0], [0, 0, 0], [0.95, 0, 0],
+        [-0.95, -0.7, 0], [0, -0.7, 0], [0.95, -0.7, 0]
+    ];
+
+
     /* --------- create 2 cubes and translate them away from each other --------- */
     shapes.push(createShape());
-    shapes[0].translate([0.5, 0, 0]);
+    //shapes[0].translate([0.5, 0, 0]);
 
     shapes.push(createShape());
-    shapes[1].translate([-0.5, 0, 0]);
+    //shapes[1].translate([-0.5, 0, 0]);
+
+    /* Placeholder Shapes */
+    shapes.push(createShape());
+    //shapes[2].translate([-0.5, 0, 0]);
+
+    shapes.push(createShape());
+    //shapes[3].translate([-0.5, 0, 0]);
+
+    shapes.push(createShape());
+    //shapes[4].translate([-0.5, 0, 0]);
+
+    shapes.push(createShape());
+    //shapes[5].translate([-0.5, 0, 0]);
+
+    shapes.push(createShape());
+    //shapes[6].translate([-0.5, 0, 0]);
+
+    shapes.push(createShape());
+    //shapes[7].translate([-0.5, 0, 0]);
+
+    shapes.push(createShape());
+    //shapes[8].translate([-0.5, 0, 0]);
+
+    shapes.forEach((shape, index) => {
+        shape.translate(positions[index]);
+    });
 
     lines.push(createGlobalCoordinateSystem());
 
@@ -77,7 +113,7 @@ window.onload = async () => {
         console.log(event)
 
         if (event.key.match(/[0-9]/)) {
-            if (event.key === 0) {
+            if (event.key == 0) {
                 currentMode = ALL_OBJECTS_SELECTED_MODE;
             } else {
                 currentMode = SINGLE_OBJECT_SELECTED_MODE;
@@ -130,6 +166,46 @@ window.onload = async () => {
         }
         else if (currentMode == ALL_OBJECTS_SELECTED_MODE) {
             console.log("All objects selected");
+            switch (event.key) {
+                // Scaling
+                /*case 'a':
+                    shapes[selectedObject].scale([DESCREASE_FACTOR, 1, 1]);
+                    break;
+                case 'A':
+                    shapes[selectedObject].scale([INCREASE_FACTOR, 1, 1]);
+                    break;
+                case 'b':
+                    shapes[selectedObject].scale([1, DESCREASE_FACTOR, 1]);
+                    break;
+                case 'B':
+                    shapes[selectedObject].scale([1, INCREASE_FACTOR, 1]);
+                    break;
+                case 'c':
+                    shapes[selectedObject].scale([1, 1, DESCREASE_FACTOR]);
+                    break;
+                case 'C':
+                    shapes[selectedObject].scale([1, 1, INCREASE_FACTOR]);
+                    break;*/
+                // Rotation
+                case 'i':
+                    shapes.forEach(shape => shape.global_rotation(-ROTATION_ANGLE, X_AXIS_VECTOR));
+                    break;
+                case 'k':
+                    shapes.forEach(shape => shape.global_rotation(ROTATION_ANGLE, X_AXIS_VECTOR));
+                    break;
+                case 'o':
+                    shapes.forEach(shape => shape.global_rotation(-ROTATION_ANGLE, Y_AXIS_VECTOR));
+                    break;
+                case 'u':
+                    shapes.forEach(shape => shape.global_rotation(ROTATION_ANGLE, Y_AXIS_VECTOR));
+                    break;
+                case 'l':
+                    shapes.forEach(shape => shape.global_rotation(-ROTATION_ANGLE, Z_AXIS_VECTOR));
+                    break;
+                case 'j':
+                    shapes.forEach(shape => shape.global_rotation(ROTATION_ANGLE, Z_AXIS_VECTOR));
+                    break;
+            }
         }
 
     })

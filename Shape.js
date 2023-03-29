@@ -39,7 +39,7 @@ class Shape {
         //mat4.mul(modelViewMatrix, viewMatrix, this.scalingMatrix);
 
         mat4.mul(modelViewMatrix, viewMatrix, this.transformationMatrix);
-        
+
 
         /* --------- send modelView matrix to GPU --------- */
         gl.uniformMatrix4fv(locations.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
@@ -91,7 +91,13 @@ class Shape {
         */
     }
 
-    scale(vector){
+    global_rotation(angle, axis) {
+        const rotationMatrix = mat4.create();
+        mat4.rotate(rotationMatrix, rotationMatrix, angle, axis);
+        mat4.mul(this.transformationMatrix, rotationMatrix, this.transformationMatrix)
+    }
+
+    scale(vector) {
         mat4.scale(this.transformationMatrix, this.transformationMatrix, vector);
     }
 
