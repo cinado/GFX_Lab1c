@@ -11,6 +11,8 @@ const INCREASE_FACTOR = 1.1;
 
 const SINGLE_OBJECT_SELECTED_MODE = 1;
 const ALL_OBJECTS_SELECTED_MODE = 2;
+const CAMERA_MODE = 3;
+
 const X_AXIS_VECTOR = [1, 0, 0];
 const Y_AXIS_VECTOR = [0, 1, 0];
 const Z_AXIS_VECTOR = [0, 0, 1];
@@ -19,7 +21,7 @@ const ROTATION_ANGLE = toRad(3);
 
 
 let selectedObject = null;
-let currentMode = ALL_OBJECTS_SELECTED_MODE;
+let currentMode = CAMERA_MODE;
 
 const locations = {
     attributes: {
@@ -102,14 +104,21 @@ window.onload = async () => {
         if (event.key.match(/[0-9]/)) {
             if (event.key == 0) {
                 currentMode = ALL_OBJECTS_SELECTED_MODE;
+                selectedObject = null;
+                console.log("All objects selected");
             } else {
                 currentMode = SINGLE_OBJECT_SELECTED_MODE;
                 selectedObject = event.key - 1;
+                console.log("Single object selection was activated");
             }
+        } else if (event.key == " ") {
+            currentMode = CAMERA_MODE;
+            selectedObject = null;
+            console.log("Camera mode was activated");
         }
+
         if (currentMode === SINGLE_OBJECT_SELECTED_MODE) {
             console.log("Selected object: ", selectedObject);
-
             switch (event.key) {
                 // Scaling
                 case 'a':
@@ -170,7 +179,6 @@ window.onload = async () => {
             }
         }
         else if (currentMode == ALL_OBJECTS_SELECTED_MODE) {
-            console.log("All objects selected");
             switch (event.key) {
                 // Scaling
                 case 'a':
@@ -231,6 +239,23 @@ window.onload = async () => {
                     break;
             }
         }
+        else if (currentMode == CAMERA_MODE) {
+            switch (event.key) {
+                // Translation
+                case 'ArrowRight':
+                    translateCamera([-0.1, 0, 0]);
+                    break;
+                case 'ArrowLeft':
+                    translateCamera([0.1, 0, 0]);
+                    break;
+                case 'ArrowUp':
+                    translateCamera([0, -0.1, 0]);
+                    break;
+                case 'ArrowDown':
+                    translateCamera([0, 0.1, 0]);
+                    break;
+            }
+        }
 
     })
 
@@ -239,6 +264,11 @@ window.onload = async () => {
 
     /* --------- start render loop --------- */
     requestAnimationFrame(render);
+}
+
+/* To be refactored */
+function translateCamera(vector) {
+    mat4.translate(viewMatrix, viewMatrix, vector);
 }
 
 /* --------- simple example of loading external files --------- */
