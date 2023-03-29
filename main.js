@@ -81,25 +81,12 @@ window.onload = async () => {
 
     /* Placeholder Shapes */
     shapes.push(createShape());
-    //shapes[2].translate([-0.5, 0, 0]);
-
     shapes.push(createShape());
-    //shapes[3].translate([-0.5, 0, 0]);
-
     shapes.push(createShape());
-    //shapes[4].translate([-0.5, 0, 0]);
-
     shapes.push(createShape());
-    //shapes[5].translate([-0.5, 0, 0]);
-
     shapes.push(createShape());
-    //shapes[6].translate([-0.5, 0, 0]);
-
     shapes.push(createShape());
-    //shapes[7].translate([-0.5, 0, 0]);
-
     shapes.push(createShape());
-    //shapes[8].translate([-0.5, 0, 0]);
 
     shapes.forEach((shape, index) => {
         shape.translate(positions[index]);
@@ -162,30 +149,48 @@ window.onload = async () => {
                 case 'j':
                     shapes[selectedObject].rotate(ROTATION_ANGLE, Z_AXIS_VECTOR);
                     break;
+                case 'ArrowRight':
+                    shapes[selectedObject].translate([0.1, 0, 0]);
+                    break;
+                case 'ArrowLeft':
+                    shapes[selectedObject].translate([-0.1, 0, 0]);
+                    break;
+                case 'ArrowUp':
+                    shapes[selectedObject].translate([0, 0.1, 0]);
+                    break;
+                case 'ArrowDown':
+                    shapes[selectedObject].translate([0, -0.1, 0]);
+                    break;
+                case ',':
+                    shapes[selectedObject].translate([0, 0, 0.1]);
+                    break;
+                case '.':
+                    shapes[selectedObject].translate([0, 0, -0.1]);
+                    break;
             }
         }
         else if (currentMode == ALL_OBJECTS_SELECTED_MODE) {
             console.log("All objects selected");
             switch (event.key) {
                 // Scaling
-                /*case 'a':
-                    shapes[selectedObject].scale([DESCREASE_FACTOR, 1, 1]);
+                case 'a':
+                    shapes.forEach(shape => shape.global_scaling([DESCREASE_FACTOR, 1, 1]));
                     break;
                 case 'A':
-                    shapes[selectedObject].scale([INCREASE_FACTOR, 1, 1]);
+                    shapes.forEach(shape => shape.global_scaling([INCREASE_FACTOR, 1, 1]));
                     break;
                 case 'b':
-                    shapes[selectedObject].scale([1, DESCREASE_FACTOR, 1]);
+                    shapes.forEach(shape => shape.global_scaling([1, DESCREASE_FACTOR, 1]));
                     break;
                 case 'B':
-                    shapes[selectedObject].scale([1, INCREASE_FACTOR, 1]);
+                    shapes.forEach(shape => shape.global_scaling([1, INCREASE_FACTOR, 1]));
                     break;
                 case 'c':
-                    shapes[selectedObject].scale([1, 1, DESCREASE_FACTOR]);
+                    shapes.forEach(shape => shape.global_scaling([1, 1, DESCREASE_FACTOR]));
                     break;
                 case 'C':
-                    shapes[selectedObject].scale([1, 1, INCREASE_FACTOR]);
-                    break;*/
+                    shapes.forEach(shape => shape.global_scaling([1, 1, INCREASE_FACTOR]));
+                    break;
                 // Rotation
                 case 'i':
                     shapes.forEach(shape => shape.global_rotation(-ROTATION_ANGLE, X_AXIS_VECTOR));
@@ -204,6 +209,25 @@ window.onload = async () => {
                     break;
                 case 'j':
                     shapes.forEach(shape => shape.global_rotation(ROTATION_ANGLE, Z_AXIS_VECTOR));
+                    break;
+                // Translation
+                case 'ArrowRight':
+                    shapes.forEach(shape => shape.global_translation([0.1, 0, 0]));
+                    break;
+                case 'ArrowLeft':
+                    shapes.forEach(shape => shape.global_translation([-0.1, 0, 0]));
+                    break;
+                case 'ArrowUp':
+                    shapes.forEach(shape => shape.global_translation([0, 0.1, 0]));
+                    break;
+                case 'ArrowDown':
+                    shapes.forEach(shape => shape.global_translation([0, -0.1, 0]));
+                    break;
+                case ',':
+                    shapes.forEach(shape => shape.global_translation([0, 0, 0.1]));
+                    break;
+                case '.':
+                    shapes.forEach(shape => shape.global_translation([0, 0, -0.1]));
                     break;
             }
         }

@@ -101,8 +101,20 @@ class Shape {
         mat4.scale(this.transformationMatrix, this.transformationMatrix, vector);
     }
 
+    global_scaling(vector) {
+        const scalingMatrix = mat4.create();
+        mat4.scale(scalingMatrix, scalingMatrix, vector);
+        mat4.mul(this.transformationMatrix, scalingMatrix, this.transformationMatrix)
+    }
+
     translate(vector) {
         mat4.translate(this.transformationMatrix, this.transformationMatrix, vector);
+    }
+
+    global_translation(vector) {
+        const translationMatrix = mat4.create();
+        mat4.translate(translationMatrix, translationMatrix, vector);
+        mat4.mul(this.transformationMatrix, translationMatrix, this.transformationMatrix);
     }
 
     static setupAttribute(buffer, location) {
