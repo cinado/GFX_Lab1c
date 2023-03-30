@@ -18,7 +18,7 @@ const Y_AXIS_VECTOR = [0, 1, 0];
 const Z_AXIS_VECTOR = [0, 0, 1];
 const ROTATION_ANGLE = toRad(3);
 
-
+let moveCamera;
 
 let selectedObject = null;
 let currentMode = CAMERA_MODE;
@@ -40,6 +40,8 @@ window.onload = async () => {
     /* --------- basic setup --------- */
     let canvas = document.getElementById("canvas");
     gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+
+    const mouseControl = new MouseControl(canvas);
 
     gl.enable(gl.DEPTH_TEST);
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -72,7 +74,6 @@ window.onload = async () => {
         [-0.95, 0, 0], [0, 0, 0], [0.95, 0, 0],
         [-0.95, -0.7, 0], [0, -0.7, 0], [0.95, -0.7, 0]
     ];
-
 
     /* --------- create 2 cubes and translate them away from each other --------- */
     shapes.push(createShape());
@@ -243,16 +244,16 @@ window.onload = async () => {
             switch (event.key) {
                 // Translation
                 case 'ArrowRight':
-                    translateCamera([-0.1, 0, 0]);
+                    moveCamera([-0.1, 0, 0]);
                     break;
                 case 'ArrowLeft':
-                    translateCamera([0.1, 0, 0]);
+                    moveCamera([0.1, 0, 0]);
                     break;
                 case 'ArrowUp':
-                    translateCamera([0, -0.1, 0]);
+                    moveCamera([0, -0.1, 0]);
                     break;
                 case 'ArrowDown':
-                    translateCamera([0, 0.1, 0]);
+                    moveCamera([0, 0.1, 0]);
                     break;
             }
         }
@@ -267,7 +268,7 @@ window.onload = async () => {
 }
 
 /* To be refactored */
-function translateCamera(vector) {
+moveCamera = function translateCamera(vector) {
     mat4.translate(viewMatrix, viewMatrix, vector);
 }
 
