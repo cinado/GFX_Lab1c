@@ -1,25 +1,32 @@
 class Shape {
+
     constructor() {
         this.vertices = [];
         this.colors = [];
+        this.coordinateSystem = null;
+
+        /* Optional index array for drawing shapes with indices */
+        this.indexArray = null;
 
         this.buffers = {
             /* --------- initialize buffers --------- */
             vertexBuffer: gl.createBuffer(),
             colorBuffer: gl.createBuffer(),
+            indexBuffer: gl.createBuffer(),
         }
 
         /* --------- initialize transformation matrix --------- */
         this.transformationMatrix = mat4.create();
-
-        /* --------- initialize scaling matrix --------- */
-        //this.scalingMatrix = mat4.create();
     }
 
-    initData(vertices, colors) {
+    initData(vertices, colors, indexArray = null) {
         /* --------- flatten & convert data to 32 bit float arrays --------- */
+
+        console.log(vertices);
         this.vertices = new Float32Array(vertices.flat());
         this.colors = new Float32Array(colors.flat());
+
+        console.log(this.vertices);
 
         /* --------- send data to buffers --------- */
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.vertexBuffer);
@@ -27,6 +34,14 @@ class Shape {
 
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
+
+        if (indexArray !== null) {
+            this.indexArray = new Uint16Array(indexArray);
+            console.log(this.indexArray);
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indexBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexArray, gl.STATIC_DRAW);
+        }
     }
 
     draw() {
@@ -45,8 +60,19 @@ class Shape {
         gl.uniformMatrix4fv(locations.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
 
 
-        /* --------- draw the shape --------- */
-        gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 4);
+        if (this.indexArray === null) {
+            /* --------- draw the shape --------- */
+            gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 4);
+        }
+        else {
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indexBuffer);
+            gl.drawElements(gl.TRIANGLES, this.indexArray.length, gl.UNSIGNED_SHORT, 0);
+        }
+
+        if (this.coordinateSystem !== null) {
+            this.coordinateSystem.transformationMatrix = this.transformationMatrix;
+            this.coordinateSystem.drawLine();
+        }
     }
 
     drawLine() {
