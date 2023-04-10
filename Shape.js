@@ -3,7 +3,8 @@ class Shape {
     constructor() {
         this.vertices = [];
         this.colors = [];
-        this.coordinateSystem = null;
+        this.normals = [];
+        //this.coordinateSystem = null;
 
         /* Optional index array for drawing shapes with indices */
         this.indexArray = null;
@@ -12,14 +13,16 @@ class Shape {
             /* --------- initialize buffers --------- */
             vertexBuffer: gl.createBuffer(),
             colorBuffer: gl.createBuffer(),
+            normalBuffer: gl.createBuffer(),
             indexBuffer: gl.createBuffer(),
         }
 
-        /* --------- initialize transformation matrix --------- */
+        // initialize transformation and normal matrix
         this.transformationMatrix = mat4.create();
+        this.normalMatrix = mat3.create();
     }
 
-    initData(vertices, colors, indexArray = null) {
+    initData(vertices, colors, normals, indexArray = null) {
         /* --------- flatten & convert data to 32 bit float arrays --------- */
 
         console.log(vertices);
@@ -35,6 +38,12 @@ class Shape {
         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.colorBuffer);
         gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
 
+        if (normals !== null) {
+            this.normals = new Float32Array(normals.flat());
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normalBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this.normals, gl.STATIC_DRAW);
+        }
+
         if (indexArray !== null) {
             this.indexArray = new Uint16Array(indexArray);
             console.log(this.indexArray);
@@ -45,19 +54,21 @@ class Shape {
     }
 
     draw() {
-        /* --------- set up attribute arrays --------- */
-        Shape.setupAttribute(this.buffers.vertexBuffer, locations.attributes.vertexLocation);
-        Shape.setupAttribute(this.buffers.colorBuffer, locations.attributes.colorLocation);
+        // set up attribute arrays
+        Shape.setupAttribute(this.buffers.vertexBuffer, currentShaderProgram.attributes.vertexLocation);
+        Shape.setupAttribute(this.buffers.colorBuffer, currentShaderProgram.attributes.colorLocation);
+        Shape.setupAttribute(this.buffers.normalBuffer, currentShaderProgram.attributes.normalLocation, true);
 
         /* --------- combine view and model matrix into modelView matrix --------- */
         const modelViewMatrix = mat4.create();
-        //mat4.mul(modelViewMatrix, viewMatrix, this.scalingMatrix);
+        mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
 
-        mat4.mul(modelViewMatrix, viewMatrix, this.transformationMatrix);
+        // construct normal matrix as inverse transpose of modelView matrix
+        mat3.normalFromMat4(this.normalMatrix, modelViewMatrix);
 
-
-        /* --------- send modelView matrix to GPU --------- */
-        gl.uniformMatrix4fv(locations.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
+        // send modelView and normal matrix to GPU
+        gl.uniformMatrix4fv(currentShaderProgram.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
+        gl.uniformMatrix3fv(currentShaderProgram.uniforms.normalMatrix, gl.FALSE, this.normalMatrix);
 
 
         if (this.indexArray === null) {
@@ -69,27 +80,27 @@ class Shape {
             gl.drawElements(gl.TRIANGLES, this.indexArray.length, gl.UNSIGNED_SHORT, 0);
         }
 
-        if (this.coordinateSystem !== null) {
+        /*if (this.coordinateSystem !== null) {
             this.coordinateSystem.transformationMatrix = this.transformationMatrix;
             this.coordinateSystem.drawLine();
-        }
+        }*/
     }
 
-    drawLine() {
-        /* --------- set up attribute arrays --------- */
-        Shape.setupAttribute(this.buffers.vertexBuffer, locations.attributes.vertexLocation);
-        Shape.setupAttribute(this.buffers.colorBuffer, locations.attributes.colorLocation);
+    // drawLine() {
+    //     /* --------- set up attribute arrays --------- */
+    //     Shape.setupAttribute(this.buffers.vertexBuffer, shaderInfo.attributes.vertexLocation);
+    //     Shape.setupAttribute(this.buffers.colorBuffer, shaderInfo.attributes.colorLocation);
 
-        /* --------- combine view and model matrix into modelView matrix --------- */
-        const modelViewMatrix = mat4.create();
-        mat4.mul(modelViewMatrix, viewMatrix, this.transformationMatrix);
+    //     /* --------- combine view and model matrix into modelView matrix --------- */
+    //     const modelViewMatrix = mat4.create();
+    //     mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
 
-        /* --------- send modelView matrix to GPU --------- */
-        gl.uniformMatrix4fv(locations.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
+    //     /* --------- send modelView matrix to GPU --------- */
+    //     gl.uniformMatrix4fv(currentShaderProgram.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
 
-        /* --------- draw the shape --------- */
-        gl.drawArrays(gl.LINES, 0, 6);
-    }
+    //     /* --------- draw the shape --------- */
+    //     gl.drawArrays(gl.LINES, 0, 6);
+    // }
 
     rotate(angle, axis) {
         /**
@@ -143,15 +154,18 @@ class Shape {
         mat4.mul(this.transformationMatrix, translationMatrix, this.transformationMatrix);
     }
 
-    static setupAttribute(buffer, location) {
+    static setupAttribute(buffer, location, isNormal = false) {
+
+        if (location === -1 || location === undefined) { return; }
+
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
 
         gl.vertexAttribPointer(
             location, // the attribute location
-            4, // number of elements for each attribute/vertex
+            isNormal ? 3 : 4, // number of elements for each attribute/vertex
             gl.FLOAT, // type of the attributes
             gl.FALSE, // is data normalised?
-            4 * Float32Array.BYTES_PER_ELEMENT, // size for one vertex
+            (isNormal ? 3 : 4) * Float32Array.BYTES_PER_ELEMENT, // size for one vertex
             0 // offset from begin of vertex to the attribute
         );
 

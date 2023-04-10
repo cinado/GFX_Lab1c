@@ -1,25 +1,4 @@
-const { mat4 } = glMatrix;
-const toRad = glMatrix.glMatrix.toRadian;
 
-const shapes = [];
-const lines = [];
-let gl = null;
-
-let localCoordinateSystem = null;
-let moveCamera = null;
-
-
-const locations = {
-    attributes: {
-        vertexLocation: null,
-        colorLocation: null
-    }, uniforms: {
-        modelViewMatrix: null,
-        projectionMatrix: null,
-    }
-}
-
-const viewMatrix = mat4.create();
 
 window.onload = async () => {
 
@@ -34,23 +13,22 @@ window.onload = async () => {
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
     gl.clearColor(0.729, 0.764, 0.674, 1);
 
-    const program = createShaderProgram("v-shader", "f-shader");
+    const program = createShaderProgram("v-shader-nolight", "f-shader");
     gl.useProgram(program);
 
-    /* --------- save attribute & uniform locations --------- */
-    locations.attributes.vertexLocation = gl.getAttribLocation(program, "vertexPosition");
-    locations.attributes.colorLocation = gl.getAttribLocation(program, "vertexColor");
-    locations.uniforms.modelViewMatrix = gl.getUniformLocation(program, "modelViewMatrix");
-    locations.uniforms.scalingMatrix = gl.getUniformLocation(program, "scalingMatrix");
-    locations.uniforms.projectionMatrix = gl.getUniformLocation(program, "projectionMatrix");
-
     /* --------- create & send projection matrix --------- */
-    const projectionMatrix = mat4.create();
-    mat4.perspective(projectionMatrix, toRad(45), canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    gl.uniformMatrix4fv(locations.uniforms.projectionMatrix, gl.FALSE, projectionMatrix);
+    mat4.perspective(matrices.projectionMatrix, toRad(45), canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+    //gl.uniformMatrix4fv(locations.uniforms.projectionMatrix, gl.FALSE, projectionMatrix);
 
     /* --------- create view matrix --------- */
-    mat4.lookAt(viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
+    mat4.lookAt(matrices.viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
+
+    // create shader programs and enable one of them
+    shaderPrograms.noLightProgram = new ShaderProgram(shaders.noLight, shaders.fragment, shaderInfo);
+    shaderPrograms.withLightProgram = new ShaderProgram(shaders.withLight, shaders.fragment, shaderInfo);
+
+    //shaderPrograms.noLightProgram.enable();
+    shaderPrograms.withLightProgram.enable();
 
     /* Position for each shape */
     const positions = [
@@ -79,10 +57,10 @@ window.onload = async () => {
         shape.translate(positions[index]);
     });
 
-    lines.push(createCoordinateSystem());
+    /*lines.push(createCoordinateSystem());
     lines[0].scale([20, 20, 20]);
 
-    localCoordinateSystem = createCoordinateSystem();
+    localCoordinateSystem = createCoordinateSystem();*/
 
     /* --------- Load some data from external files - only works with an http server --------- */
     //  await loadSomething();
@@ -92,7 +70,7 @@ window.onload = async () => {
 }
 
 moveCamera = function translateCamera(vector) {
-    mat4.translate(viewMatrix, viewMatrix, vector);
+    mat4.translate(matrices.viewMatrix, matrices.viewMatrix, vector);
 }
 
 /* --------- simple example of loading external files --------- */
@@ -115,9 +93,9 @@ function render(now) {
         shape.draw();
     });
 
-    lines.forEach(lines => {
+    /*lines.forEach(lines => {
         lines.drawLine();
-    });
+    });*/
 
     requestAnimationFrame(render)
 }
@@ -188,24 +166,36 @@ function createShape() {
 
     const colors = [];
 
-    /* --------- add one color per face, so 6 times for each color --------- */
-    colorData.forEach(color => {
-        for (let i = 0; i < 6; ++i) {
-            colors.push(color);
+    const normalData = [
+        [0, 0, 1], // front
+        [-1, 0, 0], // left
+        [0, 0, -1], // back
+        [0, -1, 0], // bottom
+        [1, 0, 0], // right
+        [0, 1, 0], // top
+    ];
+
+    // add one color and normal per vertex
+    const normals = [];
+
+    for (let i = 0; i < 6; ++i) {
+        for (let j = 0; j < 6; ++j) {
+            normals.push(normalData[i]);
+            colors.push(colorData[i]);
         }
-    });
+    }
 
     /* --------- create shape object and initialize data --------- */
     const cube = new Shape();
-    cube.initData(vertices, colors)
+    cube.initData(vertices, colors, normals)
 
     return cube;
 }
 
-function createCoordinateSystem() {
+//function createCoordinateSystem() {
     /* --------- define vertex positions & colors --------- */
     /* -------------- 2 vertices per line ------------- */
-    const vertices = [
+    /*const vertices = [
         // X, Y, Z, W
         -0.5, 0.0, 0.0, 1.0,   // X-Start
         0.5, 0.0, 0.0, 1.0,    // X-End
@@ -224,32 +214,33 @@ function createCoordinateSystem() {
     const colors = [];
 
     /* --------- add one color for each point --> 2 for each line --------- */
-    colorData.forEach(color => {
+    /*colorData.forEach(color => {
         for (let i = 0; i < 2; ++i) {
             colors.push(color);
         }
     });
 
     /* --------- create shape object and initialize data --------- */
-    const globalCoordinateSystemLines = new Shape();
-    globalCoordinateSystemLines.initData(vertices, colors)
+    /*const globalCoordinateSystemLines = new Shape();
+    globalCoordinateSystemLines.initData(vertices, colors, null);
 
     return globalCoordinateSystemLines;
-}
+}*/
 
 function parseAndCreateShape(objFile) {
     const objParser = new OBJParser();
-    const parsedShape = objParser.extractData(objFile)
+    const parsedShape = objParser.extractData(objFile);
 
+    const color = [Math.random(), Math.random(), Math.random(), 1];
     const colors = [];
 
-    for(let i = 0; i < parsedShape.vertices.length; i++){
-        colors.push([Math.random(), Math.random(), Math.random(), 1]);
+    for (let i = 0; i < parsedShape.vertices.length; i++) {
+        colors.push(color);
     }
 
     /* --------- create shape object and initialize data --------- */
     const shape = new Shape();
-    shape.initData(parsedShape.vertices, colors, parsedShape.indices);
+    shape.initData(parsedShape.vertices, colors, parsedShape.normals, parsedShape.indices);
 
     return shape;
 }

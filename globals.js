@@ -4,9 +4,9 @@ const toRad = glMatrix.glMatrix.toRadian;
 const shapes = [];
 let gl = null;
 
-const lines = [];
+//const lines = [];
 
-let localCoordinateSystem = null;
+//let localCoordinateSystem = null;
 let moveCamera = null;
 
 const shaders = {
@@ -48,5 +48,3 @@ const matrices = {
     projectionMatrix: mat4.create(),
 
 }
-
-let flag = true;
