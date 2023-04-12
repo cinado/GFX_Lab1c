@@ -24,22 +24,15 @@ class KeyboardControl {
             if (event.key.match(/^[0-9]$/)) {
                 if (event.key == 0) {
                     currentMode = ALL_OBJECTS_SELECTED_MODE;
-                    this.removeLocalCoordinateSystem();
                     selectedObject = null;
                     console.log("All objects selected");
                 } else {
                     currentMode = SINGLE_OBJECT_SELECTED_MODE;
-                    this.removeLocalCoordinateSystem();
                     selectedObject = event.key - 1;
                     console.log("Single object selection was activated");
-
-                    if (shapes[selectedObject].coordinateSystem === null) {
-                        shapes[selectedObject].coordinateSystem = localCoordinateSystem;
-                    }
                 }
             } else if (event.key == " ") {
                 currentMode = CAMERA_MODE;
-                this.removeLocalCoordinateSystem();
                 selectedObject = null;
                 console.log("Camera mode was activated");
             }
@@ -85,6 +78,7 @@ class KeyboardControl {
                     case 'j':
                         shapes[selectedObject].rotate(ROTATION_ANGLE, Z_AXIS_VECTOR);
                         break;
+                        // Translation
                     case 'ArrowRight':
                         shapes[selectedObject].translate([0.1, 0, 0]);
                         break;
@@ -203,14 +197,7 @@ class KeyboardControl {
                     shaderPrograms.phongSpecular.enable();
                     break;
             }
-
         })
-    }
-
-    removeLocalCoordinateSystem() {
-        if (shapes[selectedObject]?.coordinateSystem != null) {
-            shapes[selectedObject].coordinateSystem = null;
-        }
     }
 
 }

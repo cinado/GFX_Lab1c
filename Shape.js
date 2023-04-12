@@ -4,7 +4,6 @@ class Shape {
         this.vertices = [];
         this.colors = [];
         this.normals = [];
-        //this.coordinateSystem = null;
 
         /* Optional index array for drawing shapes with indices */
         this.indexArray = null;
@@ -80,27 +79,7 @@ class Shape {
             gl.drawElements(gl.TRIANGLES, this.indexArray.length, gl.UNSIGNED_SHORT, 0);
         }
 
-        /*if (this.coordinateSystem !== null) {
-            this.coordinateSystem.transformationMatrix = this.transformationMatrix;
-            this.coordinateSystem.drawLine();
-        }*/
     }
-
-    // drawLine() {
-    //     /* --------- set up attribute arrays --------- */
-    //     Shape.setupAttribute(this.buffers.vertexBuffer, shaderInfo.attributes.vertexLocation);
-    //     Shape.setupAttribute(this.buffers.colorBuffer, shaderInfo.attributes.colorLocation);
-
-    //     /* --------- combine view and model matrix into modelView matrix --------- */
-    //     const modelViewMatrix = mat4.create();
-    //     mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
-
-    //     /* --------- send modelView matrix to GPU --------- */
-    //     gl.uniformMatrix4fv(currentShaderProgram.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
-
-    //     /* --------- draw the shape --------- */
-    //     gl.drawArrays(gl.LINES, 0, 6);
-    // }
 
     rotate(angle, axis) {
         /**

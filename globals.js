@@ -4,9 +4,6 @@ const toRad = glMatrix.glMatrix.toRadian;
 const shapes = [];
 let gl = null;
 
-//const lines = [];
-
-//let localCoordinateSystem = null;
 let moveCamera = null;
 
 const shaders = {

@@ -1,5 +1,4 @@
 
-
 window.onload = async () => {
 
     /* --------- basic setup --------- */
@@ -20,7 +19,6 @@ window.onload = async () => {
 
     /* --------- create & send projection matrix --------- */
     mat4.perspective(matrices.projectionMatrix, toRad(45), canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    //gl.uniformMatrix4fv(locations.uniforms.projectionMatrix, gl.FALSE, projectionMatrix);
 
     /* --------- create view matrix --------- */
     mat4.lookAt(matrices.viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
@@ -61,14 +59,6 @@ window.onload = async () => {
         shape.translate(positions[index]);
     });
 
-    /*lines.push(createCoordinateSystem());
-    lines[0].scale([20, 20, 20]);
-
-    localCoordinateSystem = createCoordinateSystem();*/
-
-    /* --------- Load some data from external files - only works with an http server --------- */
-    //  await loadSomething();
-
     /* --------- start render loop --------- */
     requestAnimationFrame(render);
 }
@@ -92,13 +82,8 @@ function render(now) {
         shape.draw();
     });
 
-    /*lines.forEach(lines => {
-        lines.drawLine();
-    });*/
-
     requestAnimationFrame(render)
 }
-
 
 function createShape() {
     /* --------- define vertex positions & colors --------- */
@@ -190,41 +175,6 @@ function createShape() {
 
     return cube;
 }
-
-//function createCoordinateSystem() {
-    /* --------- define vertex positions & colors --------- */
-    /* -------------- 2 vertices per line ------------- */
-    /*const vertices = [
-        // X, Y, Z, W
-        -0.5, 0.0, 0.0, 1.0,   // X-Start
-        0.5, 0.0, 0.0, 1.0,    // X-End
-        0.0, 0.5, 0.0, 1.0,    // Y-Start
-        0.0, -0.5, 0.0, 1.0,   // Y-End
-        0.0, 0.0, 0.5, 1.0,    // Z-Start
-        0.0, -0.0, -0.5, 1.0,  // Z-End
-    ];
-
-    const colorData = [
-        [1.0, 0.0, 0.0, 1.0],    // X
-        [0.0, 1.0, 0.0, 1.0],    // Y
-        [0.0, 0.0, 1.0, 1.0],    // Z
-    ];
-
-    const colors = [];
-
-    /* --------- add one color for each point --> 2 for each line --------- */
-    /*colorData.forEach(color => {
-        for (let i = 0; i < 2; ++i) {
-            colors.push(color);
-        }
-    });
-
-    /* --------- create shape object and initialize data --------- */
-    /*const globalCoordinateSystemLines = new Shape();
-    globalCoordinateSystemLines.initData(vertices, colors, null);
-
-    return globalCoordinateSystemLines;
-}*/
 
 function parseAndCreateShape(objFile) {
     const objParser = new OBJParser();
