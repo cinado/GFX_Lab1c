@@ -13,7 +13,9 @@ window.onload = async () => {
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
     gl.clearColor(0.729, 0.764, 0.674, 1);
 
-    const program = createShaderProgram("v-shader-nolight", "f-shader");
+    await initShaderData();
+
+    const program = createShaderProgram(shaderSource.noLight, shaderSource.fragment);
     gl.useProgram(program);
 
     /* --------- create & send projection matrix --------- */
@@ -24,11 +26,11 @@ window.onload = async () => {
     mat4.lookAt(matrices.viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
 
     // create shader programs and enable one of them
-    shaderPrograms.noLightProgram = new ShaderProgram(shaders.noLight, shaders.fragment, shaderInfo);
-    shaderPrograms.withLightProgram = new ShaderProgram(shaders.withLight, shaders.fragment, shaderInfo);
+    shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
+    shaderPrograms.gouraudDiffuse = new ShaderProgram(shaderSource.gouraudDiffuse, shaderSource.fragment, shaderInfo);
+    shaderPrograms.gouraudSpecular = new ShaderProgram(shaderSource.gouraudSpecular, shaderSource.fragment, shaderInfo);
 
-    //shaderPrograms.noLightProgram.enable();
-    shaderPrograms.withLightProgram.enable();
+    shaderPrograms.noLightProgram.enable();
 
     /* Position for each shape */
     const positions = [
@@ -71,12 +73,6 @@ window.onload = async () => {
 
 moveCamera = function translateCamera(vector) {
     mat4.translate(matrices.viewMatrix, matrices.viewMatrix, vector);
-}
-
-/* --------- simple example of loading external files --------- */
-async function loadSomething() {
-    const data = await fetch('helpers.js').then(result => result.text());
-    console.log(data);
 }
 
 let then = 0;

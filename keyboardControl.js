@@ -184,6 +184,26 @@ class KeyboardControl {
                 }
             }
 
+            //Shader selection
+            switch (event.key) {
+                case 'w':
+                    //Gouraud diffuse
+                    shaderPrograms.gouraudDiffuse.enable();
+                    break;
+                case 'e':
+                    //Gouraud specular
+                    shaderPrograms.gouraudSpecular.enable()
+                    break;
+                case 'r':
+                    //Phong diffuse
+                    console.log("Phong diffuse - not available yet");
+                    break;
+                case 't':
+                    //Phong specular
+                    console.log("Phong specular - not available yet");
+                    break;
+            }
+
         })
     }
 

@@ -10,10 +10,13 @@ let gl = null;
 let moveCamera = null;
 
 const shaders = {
-    noLight: "v-shader-nolight",
-    withLight: "v-shader",
-    fragment: "f-shader"
+    noLight: "v-shader-nolight.vert",
+    gouraudDiffuse: "gouraudDiffuse.vert",
+    gouraudSpecular: "gouraudSpecular.vert",
+    fragment: "f-shader.frag"
 }
+
+let shaderSource = {};
 
 let currentShaderProgram = null;
 
@@ -36,10 +39,9 @@ const shaderInfo = {
 }
 
 const shaderPrograms = {
-
     noLightProgram: null,
-    withLightProgram: null
-
+    gouraudDiffuse: null,
+    gouraudSpecular: null,
 }
 
 const matrices = {

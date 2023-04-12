@@ -2,7 +2,8 @@
 function loadShader(shaderId, shaderType) {
     const shader = gl.createShader(shaderType);
 
-    gl.shaderSource(shader, document.getElementById(shaderId).text);
+    gl.shaderSource(shader, shaderId);
+    
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -31,4 +32,16 @@ function createShaderProgram(vShaderId, fShaderId) {
     }
 
     return program;
+}
+
+async function fetchShader(fileName) {
+    const data = await fetch(`shaders/${fileName}`).then(result => result.text());
+    return data;
+}
+
+async function initShaderData() {
+    for (const key in shaders) {
+      const shaderData = await fetchShader(shaders[key]);
+      shaderSource[key] = shaderData;
+    }
 }
