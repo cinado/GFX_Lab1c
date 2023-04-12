@@ -29,6 +29,8 @@ window.onload = async () => {
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
     shaderPrograms.gouraudDiffuse = new ShaderProgram(shaderSource.gouraudDiffuse, shaderSource.fragment, shaderInfo);
     shaderPrograms.gouraudSpecular = new ShaderProgram(shaderSource.gouraudSpecular, shaderSource.fragment, shaderInfo);
+    shaderPrograms.phongDiffuse = new ShaderProgram(shaderSource.phongVert, shaderSource.phongDiffuseFrag, shaderInfo);
+    shaderPrograms.phongSpecular = new ShaderProgram(shaderSource.phongVert, shaderSource.phongSpecularFrag, shaderInfo);
 
     shaderPrograms.noLightProgram.enable();
 
@@ -86,6 +88,7 @@ function render(now) {
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
     shapes.forEach(shape => {
+        sendUniforms(gl);
         shape.draw();
     });
 

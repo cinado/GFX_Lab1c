@@ -3,7 +3,7 @@ function loadShader(shaderId, shaderType) {
     const shader = gl.createShader(shaderType);
 
     gl.shaderSource(shader, shaderId);
-    
+
     gl.compileShader(shader);
 
     if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
@@ -41,7 +41,15 @@ async function fetchShader(fileName) {
 
 async function initShaderData() {
     for (const key in shaders) {
-      const shaderData = await fetchShader(shaders[key]);
-      shaderSource[key] = shaderData;
+        const shaderData = await fetchShader(shaders[key]);
+        shaderSource[key] = shaderData;
     }
+}
+
+function sendUniforms(gl) {
+    gl.uniform4fv(currentShaderProgram.uniforms.lightCoords, lightCoords);
+    gl.uniform4fv(currentShaderProgram.uniforms.ambientProduct, ambientProduct);
+    gl.uniform4fv(currentShaderProgram.uniforms.diffuseProduct, diffuseProduct);
+    gl.uniform4fv(currentShaderProgram.uniforms.specularProduct, specularProduct);
+    gl.uniform1f(currentShaderProgram.uniforms.shininess, shininess);
 }

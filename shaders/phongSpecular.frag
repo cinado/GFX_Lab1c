@@ -1,9 +1,5 @@
 precision mediump float;
 
-attribute vec4 vertexPosition;
-attribute vec4 vertexColor;
-attribute vec3 vertexNormal;
-
 uniform mat4 modelViewMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
@@ -15,21 +11,21 @@ uniform vec4 u_diffuseProduct;
 uniform vec4 u_specularProduct;
 uniform float u_shininess;
 
-varying vec4 fragmentColor;
+varying vec3 v_normal;
+varying vec4 v_vertexColor;
+varying vec4 v_viewPosition;
 
 void main() {
 
     // Transform light position to view space
     vec4 lightPosition = viewMatrix * u_lightCoords;
-    // Transform vertex position to view space
-    vec4 viewPosition = modelViewMatrix * vertexPosition;
 
     // Calculate and normalize light vector - L
-    vec3 lightVector = normalize(lightPosition.xyz - viewPosition.xyz);
+    vec3 lightVector = normalize(lightPosition.xyz - v_viewPosition.xyz);
     // Transform and normalize the normal - N
-    vec3 transformedNormal = normalize(normalMatrix * vertexNormal);
+    vec3 transformedNormal = normalize(normalMatrix * v_normal);
     //The direction from the current fragment to the camera
-    vec3 v_CamerDirection = normalize(-viewPosition.xyz);  
+    vec3 v_CamerDirection = normalize(-v_viewPosition.xyz);  
     //The R vector is the direction in which light is reflected off a surface
     vec3 r_reflectionVector = reflect(-lightVector, transformedNormal);
 
@@ -41,9 +37,9 @@ void main() {
 
     vec4 spec = u_specularProduct * specularIntensity;
 
-    gl_Position = projectionMatrix * viewPosition; 
-    // Multiply vertex color with lightIntensity
-    fragmentColor = vertexColor * (lightIntensity * u_diffuseProduct + u_ambientProduct) + spec;
+    // Calculate fragment color
+    gl_FragColor = v_vertexColor * (lightIntensity * u_diffuseProduct + u_ambientProduct) + spec;
+
     // set alpha value to 1 again
-    fragmentColor.a = 1.0;
+    gl_FragColor.a = 1.0;
 }
