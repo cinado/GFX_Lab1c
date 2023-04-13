@@ -4,6 +4,7 @@ const INCREASE_FACTOR = 1.1;
 const SINGLE_OBJECT_SELECTED_MODE = 1;
 const ALL_OBJECTS_SELECTED_MODE = 2;
 const CAMERA_MODE = 3;
+const LIGHT_MODE = 4;
 
 const X_AXIS_VECTOR = [1, 0, 0];
 const Y_AXIS_VECTOR = [0, 1, 0];
@@ -35,6 +36,10 @@ class KeyboardControl {
                 currentMode = CAMERA_MODE;
                 selectedObject = null;
                 console.log("Camera mode was activated");
+            } else if (event.key == "L") {
+                currentMode = LIGHT_MODE;
+                selectedObject = null;
+                console.log("Light mode was activated");
             }
 
             if (currentMode === SINGLE_OBJECT_SELECTED_MODE) {
@@ -78,7 +83,7 @@ class KeyboardControl {
                     case 'j':
                         shapes[selectedObject].rotate(ROTATION_ANGLE, Z_AXIS_VECTOR);
                         break;
-                        // Translation
+                    // Translation
                     case 'ArrowRight':
                         shapes[selectedObject].translate([0.1, 0, 0]);
                         break;
@@ -174,6 +179,48 @@ class KeyboardControl {
                         break;
                     case 'ArrowDown':
                         moveCamera([0, 0.1, 0]);
+                        break;
+                }
+            }
+            else if (currentMode == LIGHT_MODE) {
+                switch (event.key) {
+                    // Rotation
+                    case 'i':
+                        lightSource.global_rotation(-ROTATION_ANGLE, X_AXIS_VECTOR);
+                        break;
+                    case 'k':
+                        lightSource.global_rotation(ROTATION_ANGLE, X_AXIS_VECTOR);
+                        break;
+                    case 'o':
+                        lightSource.global_rotation(-ROTATION_ANGLE, Y_AXIS_VECTOR);
+                        break;
+                    case 'u':
+                        lightSource.global_rotation(ROTATION_ANGLE, Y_AXIS_VECTOR);
+                        break;
+                    case 'l':
+                        lightSource.global_rotation(-ROTATION_ANGLE, Z_AXIS_VECTOR);
+                        break;
+                    case 'j':
+                        lightSource.global_rotation(ROTATION_ANGLE, Z_AXIS_VECTOR);
+                        break;
+                    // Translation
+                    case 'ArrowRight':
+                        lightSource.translate([0.1, 0, 0, 0]);
+                        break;
+                    case 'ArrowLeft':
+                        lightSource.translate([-0.1, 0, 0, 0]);
+                        break;
+                    case 'ArrowUp':
+                        lightSource.translate([0, 0.1, 0, 0]);
+                        break;
+                    case 'ArrowDown':
+                        lightSource.translate([0, -0.1, 0, 0]);
+                        break;
+                    case ',':
+                        lightSource.translate([0, 0, 0.1, 0]);
+                        break;
+                    case '.':
+                        lightSource.translate([0, 0, -0.1, 0]);
                         break;
                 }
             }

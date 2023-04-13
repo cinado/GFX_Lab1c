@@ -58,8 +58,11 @@ const matrices = {
 
 }
 
+//Create light source
+const lightSource = new Light(glMatrix.vec4.fromValues(0.0, 10.0, 0.0, 1.0));
+
 /* --------- shader values --------- */
-const lightCoords = glMatrix.vec4.fromValues(0.0, 10.0, 0.0, 1.0);
+const lightCoords = lightSource.lightPosition;//glMatrix.vec4.fromValues(0.0, 10.0, 0.0, 1.0);
 const ambientProduct = glMatrix.vec4.fromValues(0.5, 0.5, 0.5, 1.0);
 const diffuseProduct = glMatrix.vec4.fromValues(0.8, 0.8, 0.8, 1.0);
 const specularProduct = glMatrix.vec4.fromValues(0.9, 0.9, 0.9, 1.0);
