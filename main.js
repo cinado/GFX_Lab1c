@@ -7,10 +7,12 @@ window.onload = async () => {
 
     const mouseControl = new MouseControl(canvas);
     const keyboardControl = new KeyboardControl(window);
+    const shapeCreator = new ShapeCreator();
+    boundingBoxGrid = shapeCreator.createBoundingBoxGrid();
 
     gl.enable(gl.DEPTH_TEST);
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
-    gl.clearColor(0.729, 0.764, 0.674, 1);
+    gl.clearColor(0.0, 0.0, 0.0, 1);
 
     await initShaderData();
 
@@ -33,19 +35,19 @@ window.onload = async () => {
     shaderPrograms.noLightProgram.enable();
 
     /* Position for each shape */
-    const positions = [
+   /* const positions = [
         [-0.95, 0.7, 0], [0, 0.7, 0], [0.95, 0.7, 0],
         [-0.95, 0, 0], [0, 0, 0], [0.95, 0, 0],
         [-0.95, -0.7, 0], [0, -0.7, 0], [0.95, -0.7, 0]
-    ];
+    ];*/
 
     /* --------- load obj files --------- */
-    const teapotFile = await fetch("/sampleModels/teapot.obj").then(response => response.text());
+    /*const teapotFile = await fetch("/sampleModels/teapot.obj").then(response => response.text());
     const bunnyFile = await fetch("/sampleModels/bunny.obj").then(response => response.text());
-    const tetrahedronFile = await fetch("/sampleModels/tetrahedron.obj").then(response => response.text());
+    const tetrahedronFile = await fetch("/sampleModels/tetrahedron.obj").then(response => response.text());*/
 
     /* --------- Create Shapes --------- */
-    shapes.push(parseAndCreateShape(teapotFile));
+    /*shapes.push(parseAndCreateShape(teapotFile));
     shapes.push(createShape());
     shapes.push(createShape());
     shapes.push(createShape());
@@ -57,7 +59,7 @@ window.onload = async () => {
 
     shapes.forEach((shape, index) => {
         shape.translate(positions[index]);
-    });
+    });*/
 
     /* --------- start render loop --------- */
     requestAnimationFrame(render);
@@ -81,6 +83,8 @@ function render(now) {
         sendUniforms(gl);
         shape.draw();
     });
+
+    boundingBoxGrid.drawLines();
 
     requestAnimationFrame(render)
 }

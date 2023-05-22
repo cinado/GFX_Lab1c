@@ -6,6 +6,8 @@ let gl = null;
 
 let moveCamera = null;
 
+let boundingBoxGrid = null;
+
 const shaders = {
     noLight: "v-shader-nolight.vert",
     gouraudDiffuse: "gouraudDiffuse.vert",

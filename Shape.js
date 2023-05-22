@@ -81,6 +81,22 @@ class Shape {
 
     }
 
+    drawLines() {
+        /* --------- set up attribute arrays --------- */
+        Shape.setupAttribute(this.buffers.vertexBuffer, currentShaderProgram.attributes.vertexLocation);
+        Shape.setupAttribute(this.buffers.colorBuffer, currentShaderProgram.attributes.colorLocation);
+
+        /* --------- combine view and model matrix into modelView matrix --------- */
+        const modelViewMatrix = mat4.create();
+        mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
+
+        /* --------- send modelView matrix to GPU --------- */
+        gl.uniformMatrix4fv(currentShaderProgram.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
+
+        /* --------- draw the shape --------- */
+        gl.drawArrays(gl.LINES, 0, this.vertices.length);
+    }
+
     rotate(angle, axis) {
         /**
          * The transformation functions that glMatrix provides apply the new transformation as the right hand operand,
