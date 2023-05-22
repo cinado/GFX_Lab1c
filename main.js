@@ -21,10 +21,14 @@ window.onload = async () => {
     gl.useProgram(program);
 
     /* --------- create & send projection matrix --------- */
-    mat4.perspective(matrices.projectionMatrix, toRad(45), canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+    //mat4.perspective(matrices.projectionMatrix, toRad(45), canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+
+    //mat4.ortho(matrices.projectionMatrix, -(canvas.clientWidth / canvas.clientHeight)*1.3, (canvas.clientWidth / canvas.clientHeight)*1.3, -1*1.3, 1*1.3, 0.1, 100);
 
     /* --------- create view matrix --------- */
-    mat4.lookAt(matrices.viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
+    //mat4.lookAt(matrices.viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
+    //mat4.lookAt(matrices.viewMatrix, [8, 13, 8], [0, 0, 0], [0, 1, 0]);
+    camera = new Camera(canvas.clientWidth / canvas.clientHeight);
 
     // create shader programs and enable one of them
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
@@ -86,7 +90,7 @@ function render(now) {
     });
 
     boundingBoxGrid.drawLines();
-    wireGrid.drawLines();
+    //wireGrid.drawLines();
 
     requestAnimationFrame(render)
 }

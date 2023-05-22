@@ -225,6 +225,13 @@ class KeyboardControl {
                 }
             }
 
+            switch(event.key){
+                case 'v':
+                    camera.toggleOrthogonalProjectionSelected();
+                    console.log("Projection matrix was changed...");
+                    break;
+            }
+
             //Shader selection
             switch (event.key) {
                 case 'w':
