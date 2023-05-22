@@ -7,6 +7,7 @@ let gl = null;
 let moveCamera = null;
 
 let boundingBoxGrid = null;
+let wireGrid = null;
 
 const shaders = {
     noLight: "v-shader-nolight.vert",

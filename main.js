@@ -9,6 +9,7 @@ window.onload = async () => {
     const keyboardControl = new KeyboardControl(window);
     const shapeCreator = new ShapeCreator();
     boundingBoxGrid = shapeCreator.createBoundingBoxGrid();
+    wireGrid = shapeCreator.createWireGrid();
 
     gl.enable(gl.DEPTH_TEST);
     gl.viewport(0, 0, canvas.clientWidth, canvas.clientHeight);
@@ -85,6 +86,7 @@ function render(now) {
     });
 
     boundingBoxGrid.drawLines();
+    wireGrid.drawLines();
 
     requestAnimationFrame(render)
 }
