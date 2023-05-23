@@ -72,7 +72,7 @@ class Shape {
 
         if (this.indexArray === null) {
             /* --------- draw the shape --------- */
-            gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 4);
+            //gl.drawArrays(gl.TRIANGLES, 0, this.vertices.length / 4);
         }
         else {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indexBuffer);

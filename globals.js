@@ -5,9 +5,11 @@ const shapes = [];
 let gl = null;
 
 let moveCamera = null;
+let camera=null;
 
 let boundingBoxGrid = null;
 let wireGrid = null;
+let isGridVisible = false;
 
 const shaders = {
     noLight: "v-shader-nolight.vert",

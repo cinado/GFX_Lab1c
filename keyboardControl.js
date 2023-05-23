@@ -22,7 +22,7 @@ class KeyboardControl {
             /* ----- this event contains all the information you will need to process user interaction ---- */
             console.log(event)
 
-            if (event.key.match(/^[0-9]$/)) {
+            /*if (event.key.match(/^[0-9]$/)) {
                 if (event.key == 0) {
                     currentMode = ALL_OBJECTS_SELECTED_MODE;
                     selectedObject = null;
@@ -223,12 +223,40 @@ class KeyboardControl {
                         lightSource.translate([0, 0, -0.1, 0]);
                         break;
                 }
-            }
+            }*/
 
-            switch(event.key){
+            switch (event.key) {
+                case 'g':
+                    isGridVisible = !isGridVisible;
+                    break;
+                //Camera controls
                 case 'v':
                     camera.toggleOrthogonalProjectionSelected();
                     console.log("Projection matrix was changed...");
+                    break;
+                case 'j':
+                    camera.rotateCamera(ROTATION_ANGLE, Y_AXIS_VECTOR);
+                    break;
+                case 'l':
+                    camera.rotateCamera(-ROTATION_ANGLE, Y_AXIS_VECTOR);
+                    break;
+                case 'i':
+                    camera.rotateCamera(ROTATION_ANGLE, X_AXIS_VECTOR);
+                    break;
+                case 'k':
+                    camera.rotateCamera(-ROTATION_ANGLE, X_AXIS_VECTOR);
+                    break;
+                case 'u':
+                    camera.rotateCamera(ROTATION_ANGLE, Z_AXIS_VECTOR);
+                    break;
+                case 'o':
+                    camera.rotateCamera(-ROTATION_ANGLE, Z_AXIS_VECTOR);
+                    break;
+                case '+':
+                    camera.zoomCamera([INCREASE_FACTOR, INCREASE_FACTOR, INCREASE_FACTOR]);
+                    break;
+                case '-':
+                    camera.zoomCamera([DESCREASE_FACTOR, DESCREASE_FACTOR, DESCREASE_FACTOR]);
                     break;
             }
 

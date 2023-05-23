@@ -90,7 +90,10 @@ function render(now) {
     });
 
     boundingBoxGrid.drawLines();
-    //wireGrid.drawLines();
+    
+    if(isGridVisible){
+        wireGrid.drawLines();
+    }
 
     requestAnimationFrame(render)
 }
