@@ -5,9 +5,13 @@ window.onload = async () => {
     let canvas = document.getElementById("canvas");
     gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 
+    /* --------- load obj files --------- */
+    const cube = await fetch("/sampleModels/cube.obj").then(response => response.text());
+    const parsedCubeShape = parseAndCreateShape(cube);
+
     const mouseControl = new MouseControl(canvas);
     const keyboardControl = new KeyboardControl(window);
-    const shapeCreator = new ShapeCreator();
+    const shapeCreator = new ShapeCreator(parsedCubeShape);
     boundingBoxGrid = shapeCreator.createBoundingBoxGrid();
     wireGrid = shapeCreator.createWireGrid();
 
@@ -20,17 +24,10 @@ window.onload = async () => {
     const program = createShaderProgram(shaderSource.noLight, shaderSource.fragment);
     gl.useProgram(program);
 
-    /* --------- create & send projection matrix --------- */
-    //mat4.perspective(matrices.projectionMatrix, toRad(45), canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-
-    //mat4.ortho(matrices.projectionMatrix, -(canvas.clientWidth / canvas.clientHeight)*1.3, (canvas.clientWidth / canvas.clientHeight)*1.3, -1*1.3, 1*1.3, 0.1, 100);
-
-    /* --------- create view matrix --------- */
-    //mat4.lookAt(matrices.viewMatrix, [0, 0, 3], [0, 0, 0], [0, 1, 0]);
-    //mat4.lookAt(matrices.viewMatrix, [8, 13, 8], [0, 0, 0], [0, 1, 0]);
+    // Set up projection matrices and view matrix
     camera = new Camera(canvas.clientWidth / canvas.clientHeight);
 
-
+    // Temporarily implemented for debugging purposes
     coordSys = createCoordinateSystem();
 
     // create shader programs and enable one of them
@@ -42,17 +39,9 @@ window.onload = async () => {
 
     shaderPrograms.noLightProgram.enable();
 
-    /* Position for each shape */
-   /* const positions = [
-        [-0.95, 0.7, 0], [0, 0.7, 0], [0.95, 0.7, 0],
-        [-0.95, 0, 0], [0, 0, 0], [0.95, 0, 0],
-        [-0.95, -0.7, 0], [0, -0.7, 0], [0.95, -0.7, 0]
-    ];*/
 
-    /* --------- load obj files --------- */
-    /*const teapotFile = await fetch("/sampleModels/teapot.obj").then(response => response.text());
-    const bunnyFile = await fetch("/sampleModels/bunny.obj").then(response => response.text());
-    const tetrahedronFile = await fetch("/sampleModels/tetrahedron.obj").then(response => response.text());*/
+    testCubes = shapeCreator.createTetraCubeTripod();
+    
 
     /* --------- Create Shapes --------- */
     /*shapes.push(parseAndCreateShape(teapotFile));
@@ -97,6 +86,8 @@ function render(now) {
     if(isGridVisible){
         wireGrid.drawLines();
     }
+
+    testCubes.forEach(cube => {cube.draw()});
 
     coordSys.drawLines();
 

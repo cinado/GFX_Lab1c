@@ -13,6 +13,8 @@ let isGridVisible = false;
 
 let coordSys = null;
 
+let testCubes = null;
+
 const shaders = {
     noLight: "v-shader-nolight.vert",
     gouraudDiffuse: "gouraudDiffuse.vert",

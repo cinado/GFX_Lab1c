@@ -22,7 +22,7 @@ class OBJParser {
     extractData(data) {
         const lines = data.split("\n");
         for (const line of lines) {
-            const elements = line.split(/\s+/);
+            const elements = line.trim().split(/\s+/);
             switch (elements[0]) {
                 case "vn":
                     this.addNormal(this.vecNormals, elements[1], elements[2], elements[3])

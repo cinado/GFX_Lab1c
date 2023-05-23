@@ -25,8 +25,8 @@ class Shape {
         /* --------- flatten & convert data to 32 bit float arrays --------- */
 
         console.log(vertices);
-        this.vertices = new Float32Array(vertices.flat());
-        this.colors = new Float32Array(colors.flat());
+        this.vertices = new Float32Array((vertices.constructor === Float32Array) ? vertices : vertices.flat());
+        this.colors = new Float32Array((colors.constructor === Float32Array) ? colors : colors.flat());
 
         console.log(this.vertices);
 
@@ -38,7 +38,7 @@ class Shape {
         gl.bufferData(gl.ARRAY_BUFFER, this.colors, gl.STATIC_DRAW);
 
         if (normals !== null) {
-            this.normals = new Float32Array(normals.flat());
+            this.normals = new Float32Array((normals.constructor === Float32Array) ? normals : normals.flat());
             gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.normalBuffer);
             gl.bufferData(gl.ARRAY_BUFFER, this.normals, gl.STATIC_DRAW);
         }
@@ -147,6 +147,13 @@ class Shape {
         const translationMatrix = mat4.create();
         mat4.translate(translationMatrix, translationMatrix, vector);
         mat4.mul(this.transformationMatrix, translationMatrix, this.transformationMatrix);
+    }
+
+    cloneObject(){
+        let clonedShape = new Shape();
+        clonedShape.initData(this.vertices, this.colors, this.normals, this.indexArray);
+        mat4.copy(clonedShape.transformationMatrix, this.transformationMatrix);
+        return clonedShape;
     }
 
     static setupAttribute(buffer, location, isNormal = false) {
