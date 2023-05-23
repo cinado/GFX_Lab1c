@@ -30,6 +30,9 @@ window.onload = async () => {
     //mat4.lookAt(matrices.viewMatrix, [8, 13, 8], [0, 0, 0], [0, 1, 0]);
     camera = new Camera(canvas.clientWidth / canvas.clientHeight);
 
+
+    coordSys = createCoordinateSystem();
+
     // create shader programs and enable one of them
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
     shaderPrograms.gouraudDiffuse = new ShaderProgram(shaderSource.gouraudDiffuse, shaderSource.fragment, shaderInfo);
@@ -90,10 +93,12 @@ function render(now) {
     });
 
     boundingBoxGrid.drawLines();
-    
+
     if(isGridVisible){
         wireGrid.drawLines();
     }
+
+    coordSys.drawLines();
 
     requestAnimationFrame(render)
 }
@@ -207,3 +212,116 @@ function parseAndCreateShape(objFile) {
     return shape;
 }
 
+function createShape() {
+    /* --------- define vertex positions & colors --------- */
+    /* -------------- 3 vertices per triangle ------------- */
+    const vertices = [
+        // X, Y, Z, W
+        0.2, 0.2, 0.2, 1,
+        -0.2, 0.2, 0.2, 1,
+        0.2, -0.2, 0.2, 1,
+
+        -0.2, 0.2, 0.2, 1,
+        -0.2, -0.2, 0.2, 1,
+        0.2, -0.2, 0.2, 1, // front face end
+
+        -0.2, -0.2, -0.2, 1,
+        -0.2, -0.2, 0.2, 1,
+        -0.2, 0.2, 0.2, 1,
+
+        -0.2, -0.2, -0.2, 1,
+        -0.2, 0.2, 0.2, 1,
+        -0.2, 0.2, -0.2, 1, // left face end
+
+        0.2, 0.2, -0.2, 1,
+        -0.2, -0.2, -0.2, 1,
+        -0.2, 0.2, -0.2, 1,
+
+        0.2, 0.2, -0.2, 1,
+        0.2, -0.2, -0.2, 1,
+        -0.2, -0.2, -0.2, 1, // back face end
+
+        0.2, -0.2, 0.2, 1,
+        -0.2, -0.2, -0.2, 1,
+        0.2, -0.2, -0.2, 1,
+
+        0.2, -0.2, 0.2, 1,
+        -0.2, -0.2, 0.2, 1,
+        -0.2, -0.2, -0.2, 1, // bottom face end
+
+        0.2, 0.2, 0.2, 1,
+        0.2, -0.2, -0.2, 1,
+        0.2, 0.2, -0.2, 1,
+
+        0.2, -0.2, -0.2, 1,
+        0.2, 0.2, 0.2, 1,
+        0.2, -0.2, 0.2, 1, // right face end
+
+        0.2, 0.2, 0.2, 1,
+        0.2, 0.2, -0.2, 1,
+        -0.2, 0.2, -0.2, 1,
+
+        0.2, 0.2, 0.2, 1,
+        -0.2, 0.2, -0.2, 1,
+        -0.2, 0.2, 0.2, 1, // Top face end
+    ];
+
+    const colorData = [
+        [0.0, 0.0, 0.0, 1.0],    // Front face: black
+        [1.0, 0.0, 0.0, 1.0],    // left face: red
+        [0.0, 1.0, 0.0, 1.0],    // back face: green
+        [0.0, 0.0, 1.0, 1.0],    // Bottom face: blue
+        [1.0, 1.0, 0.0, 1.0],    // Right face: yellow
+        [1.0, 0.0, 1.0, 1.0],    // top face: purple
+    ];
+
+    const colors = [];
+
+    /* --------- add one color per face, so 6 times for each color --------- */
+    colorData.forEach(color => {
+        for (let i = 0; i < 6; ++i) {
+            colors.push(color);
+        }
+    });
+
+    /* --------- create shape object and initialize data --------- */
+    const cube = new Shape();
+    cube.initData(vertices, colors)
+
+    return cube;
+}
+
+function createCoordinateSystem() {
+    /* --------- define vertex positions & colors --------- */
+    /* -------------- 2 vertices per line ------------- */
+    const vertices = [
+        // X, Y, Z, W
+        -0.5, 0.0, 0.0, 1.0,   // X-Start
+        0.5, 0.0, 0.0, 1.0,    // X-End
+        0.0, 0.5, 0.0, 1.0,    // Y-Start
+        0.0, -0.5, 0.0, 1.0,   // Y-End
+        0.0, 0.0, 0.5, 1.0,    // Z-Start
+        0.0, -0.0, -0.5, 1.0,  // Z-End
+    ];
+
+    const colorData = [
+        [1.0, 0.0, 0.0, 1.0],    // X
+        [0.0, 1.0, 0.0, 1.0],    // Y
+        [0.0, 0.0, 1.0, 1.0],    // Z
+    ];
+
+    const colors = [];
+
+    /* --------- add one color for each point --> 2 for each line --------- */
+    colorData.forEach(color => {
+        for (let i = 0; i < 2; ++i) {
+            colors.push(color);
+        }
+    });
+
+    /* --------- create shape object and initialize data --------- */
+    const globalCoordinateSystemLines = new Shape();
+    globalCoordinateSystemLines.initData(vertices, colors, null);
+
+    return globalCoordinateSystemLines;
+}
