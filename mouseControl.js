@@ -1,5 +1,5 @@
 class MouseControl {
-    #SPEED_FACTOR = 2;
+    #SPEED_FACTOR = 4;
 
     constructor(canvas) {
         this.canvas = canvas;
@@ -27,7 +27,7 @@ class MouseControl {
                 let distanceX = this.startCoordinates[0] - event.clientX;
                 let distanceY = this.startCoordinates[1] - event.clientY;
                 this.vector = this.calculateTranslateVector(distanceX, distanceY);
-                moveCamera(this.vector);
+                camera.mouseRotateCamera(this.vector[0]);
                 console.log(this.vector);
                 this.startCoordinates[0] = event.clientX;
                 this.startCoordinates[1] = event.clientY;

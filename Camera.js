@@ -39,4 +39,8 @@ class Camera {
     rotateCamera(angle, axis) {
         mat4.rotate(matrices.viewMatrix, matrices.viewMatrix, angle, axis);
     }
+
+    mouseRotateCamera(angle){
+        mat4.rotateY(matrices.viewMatrix, matrices.viewMatrix, angle);
+    }
 }
