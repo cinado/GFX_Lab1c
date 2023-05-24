@@ -245,7 +245,7 @@ class ShapeCreator {
         tetrisShape.translateTetrisShape([0,6*cubeLength,0])
         tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return new TetrisShape(cubeList);
+        return tetrisShape;
     }
 
     createTetraCubeN(){
@@ -275,7 +275,7 @@ class ShapeCreator {
         tetrisShape.translateTetrisShape([0,6*cubeLength,0])
         tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return new TetrisShape(cubeList);
+        return tetrisShape;
     }
 
     createTetraCubeTowerLeft(){

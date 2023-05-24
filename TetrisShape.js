@@ -57,4 +57,22 @@ class TetrisShape{
         })
     }
 
+    cloneMatrices(clonedTetrisShape){
+        clonedTetrisShape.tetrisShapeRotationMatrix = mat4.clone(this.tetrisShapeRotationMatrix);
+        clonedTetrisShape.tetrisShapeTranslationMatrix = mat4.clone(this.tetrisShapeTranslationMatrix);
+        clonedTetrisShape.combinedTetrisShapeMatrix = mat4.clone(this.combinedTetrisShapeMatrix);
+    }
+
+    cloneObject(){
+        let clonedCubeList = [];
+        this.cubes.forEach(cube => {
+            clonedCubeList.push(cube.cloneObject());
+        });
+
+        let clonedTetrisShape = new TetrisShape(clonedCubeList);
+        this.cloneMatrices(clonedTetrisShape);
+
+        return clonedTetrisShape;
+    }
+
 }

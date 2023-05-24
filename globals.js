@@ -11,9 +11,9 @@ let boundingBoxGrid = null;
 let wireGrid = null;
 let isGridVisible = false;
 
-let coordSys = null;
+let gameLogic = null;
 
-let testCubes = null;
+let coordSys = null;
 
 const shaders = {
     noLight: "v-shader-nolight.vert",

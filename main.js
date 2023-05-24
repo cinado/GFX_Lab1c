@@ -47,24 +47,20 @@ window.onload = async () => {
 
     shaderPrograms.phongSpecular.enable();
 
+    const tetraCubeSelection = [
+        shapeCreator.createTetraCubeI(),
+        shapeCreator.createTetraCubeL(),
+        shapeCreator.createTetraCubeN(),
+        shapeCreator.createTetraCubeO(),
+        shapeCreator.createTetraCubeT(),
+        shapeCreator.createTetraCubeTowerLeft(),
+        shapeCreator.createTetraCubeTowerRight(),
+        shapeCreator.createTetraCubeTripod()
+    ];
 
-    testCubes = shapeCreator.createTetraCubeI();
-    
+    gameLogic = new GameLogic(tetraCubeSelection);
 
-    /* --------- Create Shapes --------- */
-    /*shapes.push(parseAndCreateShape(teapotFile));
-    shapes.push(createShape());
-    shapes.push(createShape());
-    shapes.push(createShape());
-    shapes.push(parseAndCreateShape(tetrahedronFile));
-    shapes.push(createShape());
-    shapes.push(createShape());
-    shapes.push(createShape());
-    shapes.push(parseAndCreateShape(bunnyFile));
-
-    shapes.forEach((shape, index) => {
-        shape.translate(positions[index]);
-    });*/
+    gameLogic.chooseNextCube();
 
     /* --------- start render loop --------- */
     requestAnimationFrame(render);
@@ -104,12 +100,11 @@ function render(now) {
     previousSelection.enable();
     sendUniforms(gl);
 
-    /*shapes.forEach(shape => {
-        //sendUniforms(gl);
-        shape.draw();
-    });*/
+    gameLogic.tetraCubes.forEach(tetraCube =>{
+        tetraCube.draw();
+    })
 
-    testCubes.draw();//cubes.forEach(cube => {cube.draw()});
+    gameLogic.executeGameplayCycle();
 
     requestAnimationFrame(render)
 }
