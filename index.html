@@ -22,7 +22,19 @@
 </head>
 
 <body>
-    <canvas id="canvas" width="1500" height="725"></canvas>
+    <div class="ShaderGUI">
+
+            <label for="ambientProductSlider">Ambient</label>
+            <input type="range" id="ambientProductSlider" value="50" min="0" max="100">
+
+            <label for="diffuseProductSlider">Diffuse</label>
+            <input type="range" id="diffuseProductSlider" value="80" min="0" max="100">
+
+            <label for="specularProductSlider">Specular</label>
+            <input type="range" id="specularProductSlider" value="90" min="0" max="100">
+
+    </div>
+    <canvas id="canvas" width="1500" height="700"></canvas>
 </body>
 
 

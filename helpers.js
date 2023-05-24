@@ -47,9 +47,10 @@ async function initShaderData() {
 }
 
 function sendUniforms(gl) {
-    gl.uniform4fv(currentShaderProgram.uniforms.lightCoords, lightCoords);
     gl.uniform4fv(currentShaderProgram.uniforms.ambientProduct, ambientProduct);
     gl.uniform4fv(currentShaderProgram.uniforms.diffuseProduct, diffuseProduct);
     gl.uniform4fv(currentShaderProgram.uniforms.specularProduct, specularProduct);
     gl.uniform1f(currentShaderProgram.uniforms.shininess, shininess);
+    gl.uniformMatrix4fv(currentShaderProgram.uniforms.viewMatrix, gl.FALSE, matrices.viewMatrix);
+    gl.uniformMatrix4fv(currentShaderProgram.uniforms.projectionMatrix, gl.FALSE, matrices.projectionMatrix);
 }

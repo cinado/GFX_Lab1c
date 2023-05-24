@@ -5,6 +5,16 @@ window.onload = async () => {
     let canvas = document.getElementById("canvas");
     gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 
+    /* --- initialise listener --- */
+    ambientProductSlider = document.getElementById("ambientProductSlider");
+    diffuseProductSlider = document.getElementById("diffuseProductSlider");
+    specularProductSlider = document.getElementById("specularProductSlider");
+
+    ambientProductSlider.addEventListener("input", onSliderValueChanged);
+    diffuseProductSlider.addEventListener("input", onSliderValueChanged);
+    specularProductSlider.addEventListener("input", onSliderValueChanged);
+
+
     /* --------- load obj files --------- */
     const cube = await fetch("/sampleModels/cube.obj").then(response => response.text());
     const parsedCubeShape = parseAndCreateShape(cube);
@@ -32,12 +42,10 @@ window.onload = async () => {
 
     // create shader programs and enable one of them
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
-    shaderPrograms.gouraudDiffuse = new ShaderProgram(shaderSource.gouraudDiffuse, shaderSource.fragment, shaderInfo);
     shaderPrograms.gouraudSpecular = new ShaderProgram(shaderSource.gouraudSpecular, shaderSource.fragment, shaderInfo);
-    shaderPrograms.phongDiffuse = new ShaderProgram(shaderSource.phongVert, shaderSource.phongDiffuseFrag, shaderInfo);
     shaderPrograms.phongSpecular = new ShaderProgram(shaderSource.phongVert, shaderSource.phongSpecularFrag, shaderInfo);
 
-    shaderPrograms.noLightProgram.enable();
+    shaderPrograms.phongSpecular.enable();
 
 
     testCubes = shapeCreator.createTetraCubeTripod();
@@ -76,10 +84,12 @@ function render(now) {
 
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    shapes.forEach(shape => {
-        sendUniforms(gl);
-        shape.draw();
-    });
+    // Save previously used shader and switch to flat shading for the grid
+
+    let previousSelection = currentShaderProgram;
+
+    shaderPrograms.noLightProgram.enable();
+    sendUniforms(gl);
 
     boundingBoxGrid.drawLines();
 
@@ -87,9 +97,19 @@ function render(now) {
         wireGrid.drawLines();
     }
 
-    testCubes.forEach(cube => {cube.draw()});
-
     coordSys.drawLines();
+
+    // Switch back to phong/gouraud
+
+    previousSelection.enable();
+    sendUniforms(gl);
+
+    shapes.forEach(shape => {
+        //sendUniforms(gl);
+        shape.draw();
+    });
+
+    testCubes.forEach(cube => {cube.draw()});
 
     requestAnimationFrame(render)
 }

@@ -17,6 +17,7 @@ let currentMode = CAMERA_MODE;
 class KeyboardControl {
     constructor(window) {
         this.window = window;
+        this.isPhongActivated = true;
 
         this.window.addEventListener("keydown", (event) => {
             /* ----- this event contains all the information you will need to process user interaction ---- */
@@ -226,6 +227,17 @@ class KeyboardControl {
             }*/
 
             switch (event.key) {
+                //Toggle shader selection phong/gouraud
+                case 'f':
+                    this.isPhongActivated = !this.isPhongActivated;
+                    if (this.isPhongActivated) {
+                        shaderPrograms.phongSpecular.enable();
+                    }
+                    else {
+                        shaderPrograms.gouraudSpecular.enable();
+                    }
+                    break;
+                // Toggle grid visibility
                 case 'g':
                     isGridVisible = !isGridVisible;
                     break;
@@ -257,26 +269,6 @@ class KeyboardControl {
                     break;
                 case '-':
                     camera.zoomCamera([DESCREASE_FACTOR, DESCREASE_FACTOR, DESCREASE_FACTOR]);
-                    break;
-            }
-
-            //Shader selection
-            switch (event.key) {
-                case 'w':
-                    //Gouraud diffuse
-                    shaderPrograms.gouraudDiffuse.enable();
-                    break;
-                case 'e':
-                    //Gouraud specular
-                    shaderPrograms.gouraudSpecular.enable();
-                    break;
-                case 'r':
-                    //Phong diffuse
-                    shaderPrograms.phongDiffuse.enable();
-                    break;
-                case 't':
-                    //Phong specular
-                    shaderPrograms.phongSpecular.enable();
                     break;
             }
         })

@@ -5,20 +5,15 @@ class Camera {
         this.orthogonalProjectionMatrix = glMatrix.mat4.create();
         this.perspectiveProjectionMatrix = glMatrix.mat4.create();
         this.cameraPosition = glMatrix.vec3.fromValues(2, 1, 3);
-        this.transformationMatrix = mat4.create();
-        //this.translationMatrix = mat4.create();
-        this.rotationMatrix = mat4.create();
+        //this.transformationMatrix = mat4.create();
+        //this.rotationMatrix = mat4.create();
 
         mat4.ortho(this.orthogonalProjectionMatrix, -this.aspectRatio * 1.3, this.aspectRatio * 1.3, -1 * 1.3, 1 * 1.3, 0.1, 100);
         mat4.perspective(this.perspectiveProjectionMatrix, toRad(45), aspectRatio, 0.1, 100);
         mat4.lookAt(matrices.viewMatrix, this.cameraPosition, [0, 0, 0], [0, 1, 0]);
 
-        ///mat4.translate(this.translationMatrix, this.translationMatrix, this.cameraPosition);
-        //mat4.mul(matrices.viewMatrix, matrices.viewMatrix, this.translationMatrix);
-
         //default orthogonalProjectionMatrix
         matrices.projectionMatrix = this.orthogonalProjectionMatrix;
-        //this.rotateCamera(-toRad(25), [0,1,0]);
     }
 
     toggleOrthogonalProjectionSelected() {
@@ -31,11 +26,9 @@ class Camera {
     setSelectedProjectionMatrix() {
         if (this.orthogonalProjectionSelected) {
             matrices.projectionMatrix = this.orthogonalProjectionMatrix;
-            this.zoomCamera([1 / 4, 1 / 4, 1 / 4]);
         }
         else {
             matrices.projectionMatrix = this.perspectiveProjectionMatrix;
-            this.zoomCamera([4, 4, 4]);
         }
     }
 

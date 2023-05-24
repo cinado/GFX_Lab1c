@@ -5,7 +5,6 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform mat3 normalMatrix;
 
-uniform vec4 u_lightCoords;
 uniform vec4 u_ambientProduct;
 uniform vec4 u_diffuseProduct;
 uniform vec4 u_specularProduct;
@@ -17,11 +16,8 @@ varying vec4 v_viewPosition;
 
 void main() {
 
-    // Transform light position to view space
-    vec4 lightPosition = viewMatrix * u_lightCoords;
-
     // Calculate and normalize light vector - L
-    vec3 lightVector = normalize(lightPosition.xyz - v_viewPosition.xyz);
+    vec3 lightVector = normalize(vec3(1.0, 1.0, 1.0));
     // Transform and normalize the normal - N
     vec3 transformedNormal = normalize(normalMatrix * v_normal);
     //The direction from the current fragment to the camera
