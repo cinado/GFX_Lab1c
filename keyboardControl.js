@@ -1,18 +1,21 @@
 const DESCREASE_FACTOR = 0.9;
 const INCREASE_FACTOR = 1.1;
-
+/*
 const SINGLE_OBJECT_SELECTED_MODE = 1;
 const ALL_OBJECTS_SELECTED_MODE = 2;
 const CAMERA_MODE = 3;
-const LIGHT_MODE = 4;
+const LIGHT_MODE = 4;*/
+
+const TRANSLATE_BY_CUBE_LENGTH = 0.2;
 
 const X_AXIS_VECTOR = [1, 0, 0];
 const Y_AXIS_VECTOR = [0, 1, 0];
 const Z_AXIS_VECTOR = [0, 0, 1];
 const ROTATION_ANGLE = toRad(3);
+const TETRIS_SHAPE_ROTATION = toRad(90);
 
 let selectedObject = null;
-let currentMode = CAMERA_MODE;
+//let currentMode = CAMERA_MODE;
 
 class KeyboardControl {
     constructor(window) {
@@ -227,6 +230,43 @@ class KeyboardControl {
             }*/
 
             switch (event.key) {
+                case 'ArrowRight':
+                case 'd':
+                    testCubes.translateTetrisShape([TRANSLATE_BY_CUBE_LENGTH, 0, 0]);
+                    break;
+                case 'ArrowLeft':
+                case 'a':
+                    testCubes.translateTetrisShape([-TRANSLATE_BY_CUBE_LENGTH, 0, 0]);
+                    break;
+                case 'ArrowUp':
+                case 'w':
+                    testCubes.translateTetrisShape([0, 0, -TRANSLATE_BY_CUBE_LENGTH]);
+                    break;
+                case 'ArrowDown':
+                case 's':
+                    testCubes.translateTetrisShape([0, 0, TRANSLATE_BY_CUBE_LENGTH]);
+                    break;
+                case 'x':
+                    testCubes.rotateTetrisShape(TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR);
+                    break;
+                case 'X':
+                    testCubes.rotateTetrisShape(-TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR);
+                    break;
+                case 'y':
+                    testCubes.rotateTetrisShape(TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR);
+                    break;
+                case 'Y':
+                    testCubes.rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR);
+                    break;
+                case 'z':
+                    testCubes.rotateTetrisShape(TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
+                    break;
+                case 'Z':
+                    testCubes.rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
+                    break;
+                case 'p':
+                    console.log("these cubes mason, what do they mean?");
+                    break;
                 //Toggle shader selection phong/gouraud
                 case 'f':
                     this.isPhongActivated = !this.isPhongActivated;

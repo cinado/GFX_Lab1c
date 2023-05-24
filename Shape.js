@@ -52,15 +52,20 @@ class Shape {
         }
     }
 
-    draw() {
+    draw(combinedTetrisShapeMatrix) {
         // set up attribute arrays
         Shape.setupAttribute(this.buffers.vertexBuffer, currentShaderProgram.attributes.vertexLocation);
         Shape.setupAttribute(this.buffers.colorBuffer, currentShaderProgram.attributes.colorLocation);
         Shape.setupAttribute(this.buffers.normalBuffer, currentShaderProgram.attributes.normalLocation, true);
 
         /* --------- combine view and model matrix into modelView matrix --------- */
+
         const modelViewMatrix = mat4.create();
-        mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
+        //mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
+
+        let intermediateMatrix = mat4.create();
+        mat4.mul(intermediateMatrix, combinedTetrisShapeMatrix, this.transformationMatrix);
+        mat4.mul(modelViewMatrix, matrices.viewMatrix, intermediateMatrix);
 
         // construct normal matrix as inverse transpose of modelView matrix
         mat3.normalFromMat4(this.normalMatrix, modelViewMatrix);

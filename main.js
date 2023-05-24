@@ -48,7 +48,7 @@ window.onload = async () => {
     shaderPrograms.phongSpecular.enable();
 
 
-    testCubes = shapeCreator.createTetraCubeTripod();
+    testCubes = shapeCreator.createTetraCubeI();
     
 
     /* --------- Create Shapes --------- */
@@ -104,12 +104,12 @@ function render(now) {
     previousSelection.enable();
     sendUniforms(gl);
 
-    shapes.forEach(shape => {
+    /*shapes.forEach(shape => {
         //sendUniforms(gl);
         shape.draw();
-    });
+    });*/
 
-    testCubes.forEach(cube => {cube.draw()});
+    testCubes.draw();//cubes.forEach(cube => {cube.draw()});
 
     requestAnimationFrame(render)
 }

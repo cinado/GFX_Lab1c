@@ -1,5 +1,6 @@
 const cubeLength = 0.2;
 const WHITE_COLOUR_RGBA = [1.0, 1.0, 1.0, 1.0,];
+const GRID_OFFSET = [-0.1,0.1,0.1];
 
 let pointP = glMatrix.vec4.fromValues(-0.4, -1.2, -0.4, 1.0);
 let pointQ = glMatrix.vec4.fromValues(-0.4, -1.2, 0.4, 1.0);
@@ -190,89 +191,122 @@ class ShapeCreator {
         let cubeList = [];
         this.initializeCubeList(cubeList);
         
-        cubeList[0].translate([-1,6,0.0]);
-        cubeList[1].translate([0.0,6,0.0]);
-        cubeList[2].translate([1,6,0.0]);
-        cubeList[3].translate([2,6,0.0]);
+        cubeList[0].translate([-1,0,0.0]);
+        cubeList[1].translate([0.0,0,0.0]);
+        cubeList[2].translate([1,0,0.0]);
+        cubeList[3].translate([2,0,0.0]);
 
-        return cubeList;
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
+
+        return tetrisShape;
     }
 
     createTetraCubeO(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0.0,6,0.0]);
-        cubeList[1].translate([1,6,0.0]);
-        cubeList[2].translate([0.0,7,0.0]);
-        cubeList[3].translate([1,7,0.0]);
+        cubeList[0].translate([0.0,0,0.0]);
+        cubeList[1].translate([1,0,0.0]);
+        cubeList[2].translate([0.0,1,0.0]);
+        cubeList[3].translate([1,1,0.0]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return cubeList;
+        return tetrisShape;
     }
 
     createTetraCubeL(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0.0,6,0.0]);
-        cubeList[1].translate([0.0,6,1]);
-        cubeList[2].translate([0.0,7,0.0]);
-        cubeList[3].translate([0.0,8,0.0]);
+        cubeList[0].translate([0.0,0,0.0]);
+        cubeList[1].translate([0.0,0,1]);
+        cubeList[2].translate([0.0,1,0.0]);
+        cubeList[3].translate([0.0,2,0.0]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return cubeList;
+        return tetrisShape;
     }
 
     createTetraCubeT(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0.0,6,0.0]);
-        cubeList[1].translate([0.0,7,0.0]);
-        cubeList[2].translate([0.0,7,1]);
-        cubeList[3].translate([0.0,8,0.0]);
+        cubeList[0].translate([0.0,0,0.0]);
+        cubeList[1].translate([0.0,1,0.0]);
+        cubeList[2].translate([0.0,1,1]);
+        cubeList[3].translate([0.0,2,0.0]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return cubeList;
+        return new TetrisShape(cubeList);
     }
 
     createTetraCubeN(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0.0,6,0.0]);
-        cubeList[1].translate([0.0,7,0.0]);
-        cubeList[2].translate([-1,7,0.0]);
-        cubeList[3].translate([-1,8,0.0]);
+        cubeList[0].translate([0.0,0,0.0]);
+        cubeList[1].translate([0.0,1,0.0]);
+        cubeList[2].translate([-1,1,0.0]);
+        cubeList[3].translate([-1,2,0.0]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return cubeList;
+        return tetrisShape;
     }
 
     createTetraCubeTowerRight(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0,6,0]);
-        cubeList[1].translate([1,6,0]);
-        cubeList[2].translate([1,6,-1]);
-        cubeList[3].translate([1,7,-1]);
+        cubeList[0].translate([0,0,0]);
+        cubeList[1].translate([1,0,0]);
+        cubeList[2].translate([1,0,-1]);
+        cubeList[3].translate([1,1,-1]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return cubeList;
+        return new TetrisShape(cubeList);
     }
 
     createTetraCubeTowerLeft(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0,6,-1]);
-        cubeList[1].translate([0,7,-1]);
-        cubeList[2].translate([0,6,0]);
-        cubeList[3].translate([1,6,0]);
+        cubeList[0].translate([0,0,-1]);
+        cubeList[1].translate([0,1,-1]);
+        cubeList[2].translate([0,0,0]);
+        cubeList[3].translate([1,0,0]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
+
         
-        return cubeList;
+        return tetrisShape;
     }
 
     createTetraCubeTripod(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        cubeList[0].translate([0,6,-1]);
-        cubeList[1].translate([0,7,-1]);
-        cubeList[2].translate([0,6,0]);
-        cubeList[3].translate([1,6,-1]);
+        cubeList[0].translate([0,0,-1]);
+        cubeList[1].translate([0,1,-1]);
+        cubeList[2].translate([0,0,0]);
+        cubeList[3].translate([1,0,-1]);
+
+        let tetrisShape = new TetrisShape(cubeList);
+        tetrisShape.translateTetrisShape([0,6*cubeLength,0])
+        tetrisShape.translateTetrisShape(GRID_OFFSET);
         
-        return cubeList;
+        return tetrisShape;
     }
 
     /**
@@ -282,7 +316,8 @@ class ShapeCreator {
         for(let i=0; i < 4; i++){
             emptyCubeList.push(this.cubeShape.cloneObject());
             // Translate to starting position
-            emptyCubeList[i].global_translation([-0.1,0.1,0.1]);
+            //emptyCubeList[i].global_translation([-0.1,0.1,0.1]);
+            emptyCubeList[i].global_translation([0,0,0]);
         }
     }
 }
