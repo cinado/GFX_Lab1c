@@ -1,12 +1,12 @@
-class TetrisShape{
-    constructor(listOfCubes){
+class TetrisShape {
+    constructor(listOfCubes) {
         this.cubes = listOfCubes;
         this.tetrisShapeRotationMatrix = mat4.create();
         this.tetrisShapeTranslationMatrix = mat4.create();
         this.combinedTetrisShapeMatrix = mat4.create()
     }
 
-    removeLayerAndTranslateByOne(yValue){
+    removeLayerAndTranslateByOne(yValue) {
         /*
         Should look like this
 
@@ -21,16 +21,16 @@ class TetrisShape{
     }
 
     // Should be called when removing a layer
-    translateDownByOne(){
+    translateDownByOne() {
         /*this.cubes.forEach(cube => {
             cube.translate(0,-1,0);
         });*/
         const translationMatrix = mat4.create();
-        mat4.translate(translationMatrix, translationMatrix, [0,-1,0]);
+        mat4.translate(translationMatrix, translationMatrix, [0, -1, 0]);
         mat4.mul(this.tetrisShapeTranslationMatrix, translationMatrix, this.tetrisShapeTranslationMatrix);
     }
 
-    translateTetrisShape(translationVector){
+    translateTetrisShape(translationVector) {
         /*this.cubes.forEach(cube =>{
             cube.global_translation(translationVector);
         });*/
@@ -39,7 +39,7 @@ class TetrisShape{
         mat4.mul(this.tetrisShapeTranslationMatrix, translationMatrix, this.tetrisShapeTranslationMatrix);
     }
 
-    rotateTetrisShape(angle, axis){
+    rotateTetrisShape(angle, axis) {
         /*this.cubes.forEach(cube =>{
             cube.tetra_rotation(angle, axis);
         });*/
@@ -50,20 +50,20 @@ class TetrisShape{
         mat4.mul(this.tetrisShapeRotationMatrix, rotationMatrix, this.tetrisShapeRotationMatrix);
     }
 
-    draw(){
+    draw() {
         mat4.mul(this.combinedTetrisShapeMatrix, this.tetrisShapeTranslationMatrix, this.tetrisShapeRotationMatrix);
-        this.cubes.forEach(cube =>{
+        this.cubes.forEach(cube => {
             cube.draw(this.combinedTetrisShapeMatrix);
         })
     }
 
-    cloneMatrices(clonedTetrisShape){
+    cloneMatrices(clonedTetrisShape) {
         clonedTetrisShape.tetrisShapeRotationMatrix = mat4.clone(this.tetrisShapeRotationMatrix);
         clonedTetrisShape.tetrisShapeTranslationMatrix = mat4.clone(this.tetrisShapeTranslationMatrix);
         clonedTetrisShape.combinedTetrisShapeMatrix = mat4.clone(this.combinedTetrisShapeMatrix);
     }
 
-    cloneObject(){
+    cloneObject() {
         let clonedCubeList = [];
         this.cubes.forEach(cube => {
             clonedCubeList.push(cube.cloneObject());
@@ -72,6 +72,18 @@ class TetrisShape{
         let clonedTetrisShape = new TetrisShape(clonedCubeList);
         this.cloneMatrices(clonedTetrisShape);
 
+        return clonedTetrisShape;
+    }
+
+    cloneObjectAfterSwitchingModel() {
+        let clonedTetrisShape = this.cloneObject();
+        let newCubesList = [];
+        shapeCreator.initializeCubeList(newCubesList);
+        clonedTetrisShape.cubes.forEach((cube, index) => {
+            mat4.copy(newCubesList[index].transformationMatrix, cube.transformationMatrix);
+        });
+
+        clonedTetrisShape.cubes = newCubesList;
         return clonedTetrisShape;
     }
 

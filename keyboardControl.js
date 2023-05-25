@@ -61,7 +61,7 @@ class KeyboardControl {
                     gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
                     break;
                 case 'p':
-                    console.log("these cubes mason, what do they mean?");
+                    gameLogic.switchGameIsRunning();
                     break;
                 //Toggle shader selection phong/gouraud
                 case 'f':
@@ -105,6 +105,10 @@ class KeyboardControl {
                     break;
                 case '-':
                     camera.zoomCamera([DESCREASE_FACTOR, DESCREASE_FACTOR, DESCREASE_FACTOR]);
+                    break;
+                case 'b':
+                    shapeCreator.switchCurrentShape();
+                    gameLogic.updateTetraCubeSelection();
                     break;
             }
         })

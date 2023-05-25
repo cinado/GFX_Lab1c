@@ -9,6 +9,7 @@ class GameLogic {
 
         this.currentTetraCubeIndex = -1;
         this.tetraCubes = [];
+        this.gameIsRunning = true;
     }
 
     generateKey(x, y, z) {
@@ -39,9 +40,23 @@ class GameLogic {
         this.getCurrentTetraCube().translateTetrisShape(translationVector);
     }
 
-    executeGameplayCycle(){
-        this.translateCurrentTetraCube([0, GRAVITY_CONSTANT ,0]);
+    switchGameIsRunning(){
+        this.gameIsRunning = !this.gameIsRunning;
+    }
 
+    executeGameplayCycle(){
+        if(this.gameIsRunning){
+            this.translateCurrentTetraCube([0, GRAVITY_CONSTANT ,0]);
+        }
+    }
+
+    updateTetraCubeSelection(){
+        this.tetraCubeSelection = shapeCreator.createTetraCubeSelection();
+        let updatedTetraCubes = [];
+        this.tetraCubes.forEach(tetraCube => {
+            updatedTetraCubes.push(tetraCube.cloneObjectAfterSwitchingModel());
+        });
+        this.tetraCubes = updatedTetraCubes;
     }
 
     

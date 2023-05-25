@@ -17,11 +17,13 @@ window.onload = async () => {
 
     /* --------- load obj files --------- */
     const cube = await fetch("/sampleModels/cube.obj").then(response => response.text());
+    const cylinder = await fetch("/sampleModels/cylinder.obj").then(response => response.text());
     const parsedCubeShape = parseAndCreateShape(cube);
+    const parsedCylinderShape = parseAndCreateShape(cylinder);
 
     const mouseControl = new MouseControl(canvas);
     const keyboardControl = new KeyboardControl(window);
-    const shapeCreator = new ShapeCreator(parsedCubeShape);
+    shapeCreator = new ShapeCreator(parsedCubeShape, parsedCylinderShape);
     boundingBoxGrid = shapeCreator.createBoundingBoxGrid();
     wireGrid = shapeCreator.createWireGrid();
 
@@ -47,16 +49,7 @@ window.onload = async () => {
 
     shaderPrograms.phongSpecular.enable();
 
-    const tetraCubeSelection = [
-        shapeCreator.createTetraCubeI(),
-        shapeCreator.createTetraCubeL(),
-        shapeCreator.createTetraCubeN(),
-        shapeCreator.createTetraCubeO(),
-        shapeCreator.createTetraCubeT(),
-        shapeCreator.createTetraCubeTowerLeft(),
-        shapeCreator.createTetraCubeTowerRight(),
-        shapeCreator.createTetraCubeTripod()
-    ];
+    tetraCubeSelection = shapeCreator.createTetraCubeSelection();
 
     gameLogic = new GameLogic(tetraCubeSelection);
 

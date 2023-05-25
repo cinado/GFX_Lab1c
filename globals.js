@@ -12,6 +12,8 @@ let wireGrid = null;
 let isGridVisible = false;
 
 let gameLogic = null;
+let shapeCreator = null;
+let tetraCubeSelection = null;
 
 let coordSys = null;
 
