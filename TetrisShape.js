@@ -63,6 +63,14 @@ class TetrisShape {
         clonedTetrisShape.combinedTetrisShapeMatrix = mat4.clone(this.combinedTetrisShapeMatrix);
     }
 
+    getCubePositions(){
+        let cubePositions = [];
+        this.cubes.forEach(cube => {
+            cubePositions.push(cube.getCubeCenterPosition(this.combinedTetrisShapeMatrix));
+        })
+        return cubePositions;
+    }
+
     cloneObject() {
         let clonedCubeList = [];
         this.cubes.forEach(cube => {

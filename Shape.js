@@ -161,6 +161,15 @@ class Shape {
         return clonedShape;
     }
 
+    getCubeCenterPosition(combinedTetrisShapeMatrix){
+        let intermediateMatrix = mat4.create();
+        mat4.mul(intermediateMatrix, combinedTetrisShapeMatrix, this.transformationMatrix);
+
+        const cubeCenterPosition = glMatrix.vec4.create();
+        glMatrix.vec4.transformMat4(cubeCenterPosition, glMatrix.vec4.fromValues(0,0,0,1), intermediateMatrix);
+        return glMatrix.vec3.fromValues(cubeCenterPosition[0], cubeCenterPosition[1], cubeCenterPosition[2]);
+    }
+
     static setupAttribute(buffer, location, isNormal = false) {
 
         if (location === -1 || location === undefined) { return; }
