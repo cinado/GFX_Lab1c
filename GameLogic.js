@@ -1,4 +1,4 @@
-const GRAVITY_CONSTANT = -0.002;
+const GRAVITY_CONSTANT = -0.006//-0.002;
 const GRID_BOTTOM_REFERENCE_POINT = glMatrix.vec3.fromValues(-0.4, -1.2, -0.4);
 const GRID_CELL_SIZE = 0.2;
 const HALF_CUBE_LENGTH = 0.1;
@@ -57,6 +57,10 @@ class GameLogic {
         let gravityResults = this.preventGravityCollision();
         if (gravityResults.collisionOccured) {
             this.translateCurrentTetraCube([0, gravityResults.translateUpCorrection, 0]);
+            this.registerTetrominoInCollisionMap(this.getCurrentTetraCube());
+
+
+            this.chooseNextCube();
 
         } else {
             this.translateCurrentTetraCube([0, GRAVITY_CONSTANT, 0]);
@@ -106,12 +110,6 @@ class GameLogic {
             glMatrix.vec3.add(translatedCubeCenterPosition, cubeCenterPosition, [0, GRAVITY_CONSTANT, 0]);
             let translatedCubeBorderCoordinates = this.getCubeBorderCoordinatesFromCenter(translatedCubeCenterPosition);
 
-            // translate cube border coordinates to grid coordinates
-            /*let relativeAndGridCoordinates = translatedCubeBorderCoordinates.forEach(borderCoordinate => {
-                //borderCoordinate.map(coordinate => this.retrieveRelativeAndGridCoordinates(coor))
-                this.rec
-            });*/
-
             let relativeAndGridCoordinates = [];
 
             translatedCubeBorderCoordinates.flat().forEach(borderCoordinate => {
@@ -119,18 +117,26 @@ class GameLogic {
                 relativeAndGridCoordinates.push(result);
             });
 
-
-            //translatedCubeBorderCoordinates.map(borderCoordinate => this.retrieveRelativeAndGridCoordinates(borderCoordinate));
-
-            /**
-             * If a tetris cube gets translated over a grid cell boundary then we need to translate it back by that amount
-             */
-
+            // Base collision check
             relativeAndGridCoordinates.forEach(coordinate => {
                 if (coordinate.gridCoordinate[1] < 0) {
                     translateUpCorrection = coordinate.relativeCoordinate;
                 }
+                //Check for collision with other tetrominos
+                if(this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))){
+                    let gridCellBeforeCollsion = glMatrix.vec3.create();
+                    let correctionResult = glMatrix.vec3.create();
+
+                    glMatrix.vec3.add(gridCellBeforeCollsion, glMatrix.vec3.fromValues(1,1,1), coordinate.gridCoordinate);
+                    glMatrix.vec3.scale(gridCellBeforeCollsion, gridCellBeforeCollsion, GRID_CELL_SIZE);
+                    glMatrix.vec3.sub(correctionResult, gridCellBeforeCollsion, coordinate.relativeCoordinate);
+
+                    translateUpCorrection = correctionResult;
+                }
             });
+
+            
+
 
         });
 
@@ -138,6 +144,19 @@ class GameLogic {
             collisionOccured: (translateUpCorrection) ? true : false,
             translateUpCorrection: Math.abs(translateUpCorrection[1])
         }
+    }
+
+    calculateCorrectionBasedOnGridCoordinate(){
+
+    }
+
+    registerTetrominoInCollisionMap(tetromino){
+        const cubePositions = tetromino.getCubePositions();
+        cubePositions.forEach(cubePosition =>{
+            let gridCoordinate = this.retrieveRelativeAndGridCoordinates(cubePosition).gridCoordinate;
+            const key = this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]);
+            this.collisionMap.set(key, true);
+        })
     }
 
     getCubeBorderCoordinatesFromCenter(cubeCenter) {
