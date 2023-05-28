@@ -24,7 +24,9 @@ window.onload = async () => {
     const mouseControl = new MouseControl(canvas);
     const keyboardControl = new KeyboardControl(window);
     shapeCreator = new ShapeCreator(parsedCubeShape, parsedCylinderShape);
-    boundingBoxGrid = shapeCreator.createBoundingBoxGrid();
+
+    const boundingBoxCreator = new BoundingBox();
+    boundingBoxGrid = boundingBoxCreator.createBoundingBox();//shapeCreator.createBoundingBoxGrid();
     wireGrid = shapeCreator.createWireGrid();
 
     gl.enable(gl.DEPTH_TEST);
@@ -80,7 +82,10 @@ function render(now) {
     shaderPrograms.noLightProgram.enable();
     sendUniforms(gl);
 
-    boundingBoxGrid.drawLines();
+    //boundingBoxGrid.drawLines();
+    boundingBoxGrid.forEach(boundingBoxSide =>{
+        boundingBoxSide.drawLinesIfVisible();
+    });
 
     if(isGridVisible){
         wireGrid.drawLines();

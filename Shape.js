@@ -102,6 +102,39 @@ class Shape {
         gl.drawArrays(gl.LINES, 0, this.vertices.length);
     }
 
+    drawLinesIfVisible() {
+        /* --------- set up attribute arrays --------- */
+        Shape.setupAttribute(this.buffers.vertexBuffer, currentShaderProgram.attributes.vertexLocation);
+        Shape.setupAttribute(this.buffers.colorBuffer, currentShaderProgram.attributes.colorLocation);
+
+        /* --------- combine view and model matrix into modelView matrix --------- */
+        const modelViewMatrix = mat4.create();
+        mat4.mul(modelViewMatrix, matrices.viewMatrix, this.transformationMatrix);
+
+        mat3.normalFromMat4(this.normalMatrix, modelViewMatrix);
+        // maybe not necessary
+        gl.uniformMatrix3fv(currentShaderProgram.uniforms.normalMatrix, gl.FALSE, this.normalMatrix);
+
+        /* --------- send modelView matrix to GPU --------- */
+        gl.uniformMatrix4fv(currentShaderProgram.uniforms.modelViewMatrix, gl.FALSE, modelViewMatrix);
+
+        /* --- Check if visible ---- */
+
+        let viewDirection = glMatrix.vec3.create();
+        glMatrix.vec3.transformMat4(viewDirection, viewDirection, matrices.viewMatrix);
+
+        let transformedNormal = glMatrix.vec3.create();
+        glMatrix.vec3.transformMat3(transformedNormal, glMatrix.vec3.fromValues(this.normals[0], this.normals[1], this.normals[2]), this.normalMatrix);
+        
+        if(Math.sign(glMatrix.vec3.dot(viewDirection, transformedNormal)) == -1){
+            return;
+        }
+
+
+        /* --------- draw the shape --------- */
+        gl.drawArrays(gl.LINES, 0, this.vertices.length);
+    }
+
     rotate(angle, axis) {
         /**
          * The transformation functions that glMatrix provides apply the new transformation as the right hand operand,

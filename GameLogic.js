@@ -183,7 +183,7 @@ class GameLogic {
     }
 
     updateGravity() {
-        this.GRAVITY_CONSTANT = -0.08;
+        this.GRAVITY_CONSTANT = -0.09;
     }
 
     checkIfTransformationPossible(clonedTetromino) {

@@ -20,7 +20,7 @@ class ShapeCreator {
         this.currenShape = cubeShape;
         //this.cubeShape.scale([0.2,0.2,0.2]);
     }
-
+    
     createBoundingBoxGrid() {
         let vertices = [];
 
@@ -72,7 +72,7 @@ class ShapeCreator {
         glMatrix.vec4.add(pointP, pointP, yValueOffset);
         glMatrix.vec4.add(pointQ, pointQ, yValueOffset);
 
-        //Left wall - add vertices for vertical lines
+        //Left wall - add vertices for horizontal lines
         for (let i = 0; i < 12; i++) {
             vertices.push([pointP[0], pointP[1], pointP[2], pointP[3]]);
             vertices.push([pointQ[0], pointQ[1], pointQ[2], pointQ[3]]);
@@ -99,7 +99,6 @@ class ShapeCreator {
         this.resetPointsBoundingBoxGrid();
 
         const colors = [];
-        /*vertices = vertices.map(a => [...a]).flat();*/
 
         vertices.forEach(() => {
             colors.push(WHITE_COLOUR_RGBA);
