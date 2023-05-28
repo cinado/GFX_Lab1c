@@ -31,20 +31,12 @@ class TetrisShape {
     }
 
     translateTetrisShape(translationVector) {
-        /*this.cubes.forEach(cube =>{
-            cube.global_translation(translationVector);
-        });*/
         const translationMatrix = mat4.create();
         mat4.translate(translationMatrix, translationMatrix, translationVector);
         mat4.mul(this.tetrisShapeTranslationMatrix, translationMatrix, this.tetrisShapeTranslationMatrix);
     }
 
     rotateTetrisShape(angle, axis) {
-        /*this.cubes.forEach(cube =>{
-            cube.tetra_rotation(angle, axis);
-        });*/
-        //mat4.rotate(this.tetrisShapeRotationMatrix, this.tetrisShapeRotationMatrix, angle, axis);
-
         const rotationMatrix = mat4.create();
         mat4.rotate(rotationMatrix, rotationMatrix, angle, axis);
         mat4.mul(this.tetrisShapeRotationMatrix, rotationMatrix, this.tetrisShapeRotationMatrix);
@@ -66,7 +58,8 @@ class TetrisShape {
     getCubePositions(){
         let cubePositions = [];
         this.cubes.forEach(cube => {
-            cubePositions.push(cube.getCubeCenterPosition(this.combinedTetrisShapeMatrix));
+            //cubePositions.push(cube.getCubeCenterPosition(this.combinedTetrisShapeMatrix));
+            cubePositions.push(cube.getCubeCenterPosition(mat4.mul(mat4.create(), this.tetrisShapeTranslationMatrix, this.tetrisShapeRotationMatrix)));
         })
         return cubePositions;
     }

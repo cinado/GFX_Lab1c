@@ -1,10 +1,5 @@
 const DESCREASE_FACTOR = 0.9;
 const INCREASE_FACTOR = 1.1;
-/*
-const SINGLE_OBJECT_SELECTED_MODE = 1;
-const ALL_OBJECTS_SELECTED_MODE = 2;
-const CAMERA_MODE = 3;
-const LIGHT_MODE = 4;*/
 
 const TRANSLATE_BY_CUBE_LENGTH = 0.2;
 
@@ -14,8 +9,7 @@ const Z_AXIS_VECTOR = [0, 0, 1];
 const ROTATION_ANGLE = toRad(3);
 const TETRIS_SHAPE_ROTATION = toRad(90);
 
-let selectedObject = null;
-//let currentMode = CAMERA_MODE;
+let currentTetromino = null;
 
 class KeyboardControl {
     constructor(window) {
@@ -24,41 +18,63 @@ class KeyboardControl {
 
         this.window.addEventListener("keydown", (event) => {
             /* ----- this event contains all the information you will need to process user interaction ---- */
-            console.log(event)
+
+            currentTetromino = gameLogic.getCurrentTetraCube();
+
             switch (event.key) {
                 case 'ArrowRight':
                 case 'd':
-                    gameLogic.getCurrentTetraCube().translateTetrisShape([TRANSLATE_BY_CUBE_LENGTH, 0, 0]);
+                    if (checkTranslationForTetromino([TRANSLATE_BY_CUBE_LENGTH, 0, 0])) {
+                        currentTetromino.translateTetrisShape([TRANSLATE_BY_CUBE_LENGTH, 0, 0]);
+                    }
                     break;
                 case 'ArrowLeft':
                 case 'a':
-                    gameLogic.getCurrentTetraCube().translateTetrisShape([-TRANSLATE_BY_CUBE_LENGTH, 0, 0]);
+                    if (checkTranslationForTetromino([-TRANSLATE_BY_CUBE_LENGTH, 0, 0])) {
+                        gameLogic.getCurrentTetraCube().translateTetrisShape([-TRANSLATE_BY_CUBE_LENGTH, 0, 0]);
+                    }
                     break;
                 case 'ArrowUp':
                 case 'w':
-                    gameLogic.getCurrentTetraCube().translateTetrisShape([0, 0, -TRANSLATE_BY_CUBE_LENGTH]);
+                    if (checkTranslationForTetromino([0, 0, -TRANSLATE_BY_CUBE_LENGTH])) {
+                        gameLogic.getCurrentTetraCube().translateTetrisShape([0, 0, -TRANSLATE_BY_CUBE_LENGTH]);
+                    }
                     break;
                 case 'ArrowDown':
                 case 's':
-                    gameLogic.getCurrentTetraCube().translateTetrisShape([0, 0, TRANSLATE_BY_CUBE_LENGTH]);
+                    if (checkTranslationForTetromino([0, 0, TRANSLATE_BY_CUBE_LENGTH])) {
+                        gameLogic.getCurrentTetraCube().translateTetrisShape([0, 0, TRANSLATE_BY_CUBE_LENGTH]);
+                    }
                     break;
                 case 'x':
-                    gameLogic.getCurrentTetraCube().rotateTetrisShape(TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR);
+                    if (checkRotationForTetromino(TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR)) {
+                        gameLogic.getCurrentTetraCube().rotateTetrisShape(TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR);
+                    }
                     break;
                 case 'X':
-                    gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR);
+                    if (checkRotationForTetromino(-TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR)) {
+                        gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, X_AXIS_VECTOR);
+                    }
                     break;
                 case 'y':
-                    gameLogic.getCurrentTetraCube().rotateTetrisShape(TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR);
+                    if (checkRotationForTetromino(TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR)) {
+                        gameLogic.getCurrentTetraCube().rotateTetrisShape(TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR);
+                    }
                     break;
                 case 'Y':
-                    gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR);
+                    if (checkRotationForTetromino(-TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR)) {
+                        gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Y_AXIS_VECTOR);
+                    }
                     break;
                 case 'z':
-                    gameLogic.getCurrentTetraCube().rotateTetrisShape(TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
+                    if (checkRotationForTetromino(TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR)) {
+                        gameLogic.getCurrentTetraCube().rotateTetrisShape(TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
+                    }
                     break;
                 case 'Z':
-                    gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
+                    if (checkRotationForTetromino(-TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR)) {
+                        gameLogic.getCurrentTetraCube().rotateTetrisShape(-TETRIS_SHAPE_ROTATION, Z_AXIS_VECTOR);
+                    }
                     break;
                 case 'p':
                     gameLogic.switchGameIsRunning();
@@ -114,4 +130,16 @@ class KeyboardControl {
         })
     }
 
+}
+
+function checkTranslationForTetromino(translationVector) {
+    let clonedTetromino = currentTetromino.cloneObject();
+    clonedTetromino.translateTetrisShape(translationVector);
+    return gameLogic.checkIfTransformationPossible(clonedTetromino);
+}
+
+function checkRotationForTetromino(rotationAngle, axis) {
+    let clonedTetromino = currentTetromino.cloneObject();
+    clonedTetromino.rotateTetrisShape(rotationAngle, axis);
+    return gameLogic.checkIfTransformationPossible(clonedTetromino);
 }

@@ -1,10 +1,11 @@
-const GRAVITY_CONSTANT = -0.006//-0.002;
+const GRAVITY_CONSTANT = -0.002;
 const GRID_BOTTOM_REFERENCE_POINT = glMatrix.vec3.fromValues(-0.4, -1.2, -0.4);
 const GRID_CELL_SIZE = 0.2;
 const HALF_CUBE_LENGTH = 0.1;
-const xOffset = glMatrix.vec3.fromValues(HALF_CUBE_LENGTH, 0, 0);
-const yOffset = glMatrix.vec3.fromValues(0, HALF_CUBE_LENGTH, 0);
-const zOffset = glMatrix.vec3.fromValues(0, 0, HALF_CUBE_LENGTH);
+const CORRECTION_FACTOR = 0.0001;
+const xOffset = glMatrix.vec3.fromValues(HALF_CUBE_LENGTH - CORRECTION_FACTOR, 0, 0);
+const yOffset = glMatrix.vec3.fromValues(0, HALF_CUBE_LENGTH - CORRECTION_FACTOR, 0);
+const zOffset = glMatrix.vec3.fromValues(0, 0, HALF_CUBE_LENGTH - CORRECTION_FACTOR);
 
 class GameLogic {
     constructor(tetraCubeSelection) {
@@ -123,21 +124,17 @@ class GameLogic {
                     translateUpCorrection = coordinate.relativeCoordinate;
                 }
                 //Check for collision with other tetrominos
-                if(this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))){
+                if (this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))) {
                     let gridCellBeforeCollsion = glMatrix.vec3.create();
                     let correctionResult = glMatrix.vec3.create();
 
-                    glMatrix.vec3.add(gridCellBeforeCollsion, glMatrix.vec3.fromValues(1,1,1), coordinate.gridCoordinate);
+                    glMatrix.vec3.add(gridCellBeforeCollsion, glMatrix.vec3.fromValues(1, 1, 1), coordinate.gridCoordinate);
                     glMatrix.vec3.scale(gridCellBeforeCollsion, gridCellBeforeCollsion, GRID_CELL_SIZE);
                     glMatrix.vec3.sub(correctionResult, gridCellBeforeCollsion, coordinate.relativeCoordinate);
 
                     translateUpCorrection = correctionResult;
                 }
             });
-
-            
-
-
         });
 
         return {
@@ -146,13 +143,51 @@ class GameLogic {
         }
     }
 
-    calculateCorrectionBasedOnGridCoordinate(){
+    getRelativeAndGridCoordsForBorderCoordinatesFromCubeCenter(cubeCenterCoordinates) {
+        let relativeAndGridCoordinates = [];
+        cubeCenterCoordinates.forEach(cubeCenterCoordinate =>{
+            this.getCubeBorderCoordinatesFromCenter(cubeCenterCoordinate).flat().forEach(borderCoordinate => {
+                const result = this.retrieveRelativeAndGridCoordinates(borderCoordinate);
+                relativeAndGridCoordinates.push(result);
+            });
+        });
+        /*this.getCubeBorderCoordinatesFromCenter(cubeCenterCoordinates).flat().forEach(borderCoordinate => {
+            const result = this.retrieveRelativeAndGridCoordinates(borderCoordinate);
+            relativeAndGridCoordinates.push(result);
+        });*/
+
+        return relativeAndGridCoordinates;
+    }
+
+    calculateCorrectionBasedOnGridCoordinate() {
 
     }
 
-    registerTetrominoInCollisionMap(tetromino){
+    checkIfTransformationPossible(clonedTetromino) {
+        let relativeAndGridCoordinates = this.getRelativeAndGridCoordsForBorderCoordinatesFromCubeCenter(clonedTetromino.getCubePositions());
+
+        for(const coordinate of relativeAndGridCoordinates) {
+            //Check if transformation causes collision with any tetromino
+            if(this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))){
+                return false;
+            }
+            //Check if transformation would result in leaving the grid
+            for (let i = 0; i < 3; i++) {
+                if (coordinate.gridCoordinate[i] < 0) {
+                    return false;
+                }
+            }
+            //Check if transformation would result in leaving the grid
+            if(coordinate.gridCoordinate[0] > 3 || coordinate.gridCoordinate[2] > 3){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    registerTetrominoInCollisionMap(tetromino) {
         const cubePositions = tetromino.getCubePositions();
-        cubePositions.forEach(cubePosition =>{
+        cubePositions.forEach(cubePosition => {
             let gridCoordinate = this.retrieveRelativeAndGridCoordinates(cubePosition).gridCoordinate;
             const key = this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]);
             this.collisionMap.set(key, true);
