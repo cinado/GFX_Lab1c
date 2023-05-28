@@ -59,6 +59,7 @@ class GameLogic {
         }
         let gravityResults = this.preventGravityCollision();
         if (gravityResults.collisionOccured) {
+            gravityResults.translateUpCorrection = gravityResults.translateUpCorrection + this.GRAVITY_CONSTANT;
             this.translateCurrentTetraCube([0, gravityResults.translateUpCorrection, 0]);
             this.registerTetrominoInCollisionMap(this.getCurrentTetraCube());
             let layerOrFailed = this.checkIfPlaneIsCovered();
@@ -146,7 +147,9 @@ class GameLogic {
             // Base collision check
             relativeAndGridCoordinates.forEach(coordinate => {
                 if (coordinate.gridCoordinate[1] < 0) {
-                    translateUpCorrection = coordinate.relativeCoordinate;
+                    let correctionResult = glMatrix.vec3.clone(coordinate.relativeCoordinate);
+                    glMatrix.vec3.scale(correctionResult, correctionResult, -1);
+                    translateUpCorrection = correctionResult;
                 }
                 //Check for collision with other tetrominos
                 if (this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))) {
@@ -164,7 +167,7 @@ class GameLogic {
 
         return {
             collisionOccured: (translateUpCorrection) ? true : false,
-            translateUpCorrection: Math.abs(translateUpCorrection[1])
+            translateUpCorrection: translateUpCorrection[1]//Math.abs(translateUpCorrection[1])
         }
     }
 
@@ -180,7 +183,7 @@ class GameLogic {
     }
 
     updateGravity() {
-        this.GRAVITY_CONSTANT = -0.04;
+        this.GRAVITY_CONSTANT = -0.08;
     }
 
     checkIfTransformationPossible(clonedTetromino) {
