@@ -64,6 +64,10 @@ class TetrisShape {
         return cubePositions;
     }
 
+    getCubePositionForIndex(index){
+        return this.cubes[index].getCubeCenterPosition(mat4.mul(mat4.create(), this.tetrisShapeTranslationMatrix, this.tetrisShapeRotationMatrix));
+    }
+
     cloneObject() {
         let clonedCubeList = [];
         this.cubes.forEach(cube => {

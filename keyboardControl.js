@@ -126,6 +126,9 @@ class KeyboardControl {
                     shapeCreator.switchCurrentShape();
                     gameLogic.updateTetraCubeSelection();
                     break;
+                case ' ':
+                    gameLogic.updateGravity();
+                    break;
             }
         })
     }

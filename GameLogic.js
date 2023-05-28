@@ -1,4 +1,3 @@
-const GRAVITY_CONSTANT = -0.002;
 const GRID_BOTTOM_REFERENCE_POINT = glMatrix.vec3.fromValues(-0.4, -1.2, -0.4);
 const GRID_CELL_SIZE = 0.2;
 const HALF_CUBE_LENGTH = 0.1;
@@ -8,6 +7,8 @@ const yOffset = glMatrix.vec3.fromValues(0, HALF_CUBE_LENGTH - CORRECTION_FACTOR
 const zOffset = glMatrix.vec3.fromValues(0, 0, HALF_CUBE_LENGTH - CORRECTION_FACTOR);
 
 class GameLogic {
+    GRAVITY_CONSTANT = -0.004;
+
     constructor(tetraCubeSelection) {
         this.tetraCubeSelection = tetraCubeSelection;
 
@@ -24,9 +25,9 @@ class GameLogic {
     }
 
     initializeMap() {
-        for (let x = 0; x <= 3; x++) {
-            for (let y = 0; y <= 11; y++) {
-                for (let z = 0; z <= 3; z++) {
+        for (let x = 0; x <= 4; x++) {
+            for (let y = 0; y <= 12; y++) {
+                for (let z = 0; z <= 4; z++) {
                     this.collisionMap.set(this.generateKey(x, y, z), false);
                 }
             }
@@ -41,6 +42,7 @@ class GameLogic {
         let chosenTetraCube = this.tetraCubeSelection[Math.floor(Math.random() * this.tetraCubeSelection.length)];
         this.currentTetraCubeIndex++;
         this.tetraCubes.push(chosenTetraCube.cloneObject());
+        this.GRAVITY_CONSTANT = -0.004;
     }
 
     translateCurrentTetraCube(translationVector) {
@@ -59,12 +61,15 @@ class GameLogic {
         if (gravityResults.collisionOccured) {
             this.translateCurrentTetraCube([0, gravityResults.translateUpCorrection, 0]);
             this.registerTetrominoInCollisionMap(this.getCurrentTetraCube());
-
+            let layerOrFailed = this.checkIfPlaneIsCovered();
+            if(layerOrFailed != -1){
+                this.deleteAllCubesInLayer(layerOrFailed);
+            }
 
             this.chooseNextCube();
 
         } else {
-            this.translateCurrentTetraCube([0, GRAVITY_CONSTANT, 0]);
+            this.translateCurrentTetraCube([0, this.GRAVITY_CONSTANT, 0]);
         }
     }
 
@@ -100,6 +105,26 @@ class GameLogic {
         }
     }
 
+    deleteAllCubesInLayer(layer){
+        for(let tetromino of this.tetraCubes){
+            let indicesToBeRemoved = [];
+            for(let i = 0; i < tetromino.cubes.length; i++){
+                let gridCoordinate = this.retrieveRelativeAndGridCoordinates(tetromino.getCubePositionForIndex(i)).gridCoordinate;
+                if(gridCoordinate[1] == layer){
+                    indicesToBeRemoved.push(i);
+                    this.updateCollisionMapCoordinateToFalse(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]));
+                }
+            }
+            const indicesToBeFiltered = new Set(indicesToBeRemoved);
+            const filteredArray = tetromino.cubes.filter((_, index) => !indicesToBeFiltered.has(index));
+            tetromino.cubes = filteredArray;
+        }
+    }
+
+    updateCollisionMapCoordinateToFalse(key){
+        this.collisionMap.set(key, false);
+    }
+
     preventGravityCollision() {
         // If collision occured, translate tetris shape up by the amount of overlapping
         let translateUpCorrection = 0;
@@ -108,7 +133,7 @@ class GameLogic {
         cubeCenterPositions.forEach(cubeCenterPosition => {
             //  translate cube center and get cube border coordinates
             let translatedCubeCenterPosition = glMatrix.vec3.create();
-            glMatrix.vec3.add(translatedCubeCenterPosition, cubeCenterPosition, [0, GRAVITY_CONSTANT, 0]);
+            glMatrix.vec3.add(translatedCubeCenterPosition, cubeCenterPosition, [0, this.GRAVITY_CONSTANT, 0]);
             let translatedCubeBorderCoordinates = this.getCubeBorderCoordinatesFromCenter(translatedCubeCenterPosition);
 
             let relativeAndGridCoordinates = [];
@@ -151,16 +176,11 @@ class GameLogic {
                 relativeAndGridCoordinates.push(result);
             });
         });
-        /*this.getCubeBorderCoordinatesFromCenter(cubeCenterCoordinates).flat().forEach(borderCoordinate => {
-            const result = this.retrieveRelativeAndGridCoordinates(borderCoordinate);
-            relativeAndGridCoordinates.push(result);
-        });*/
-
         return relativeAndGridCoordinates;
     }
 
-    calculateCorrectionBasedOnGridCoordinate() {
-
+    updateGravity() {
+        this.GRAVITY_CONSTANT = -0.04;
     }
 
     checkIfTransformationPossible(clonedTetromino) {
@@ -192,6 +212,25 @@ class GameLogic {
             const key = this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]);
             this.collisionMap.set(key, true);
         })
+    }
+
+    checkIfPlaneIsCovered(){
+        let mapEachLayer = Array.from({length:12}, () => []);
+        for(let y = 0; y < 12; y++){
+            for(let x = 0; x < 4; x++){
+                for(let z = 0; z < 4; z++){
+                    mapEachLayer[y].push(this.collisionMap.get(this.generateKey(x,y,z)))
+                }
+            }
+        }
+
+        for(let i = 0; i < 12; i++){
+            if(mapEachLayer[i].every(value => value === true)){
+                return i;
+            }
+        }
+
+        return -1;
     }
 
     getCubeBorderCoordinatesFromCenter(cubeCenter) {

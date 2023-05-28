@@ -376,13 +376,13 @@ class ShapeCreator {
     createTetraCubeSelection(){
         return [
             this.createTetraCubeI(),
-            this.createTetraCubeL(),
-            this.createTetraCubeN(),
-            this.createTetraCubeO(),
-            this.createTetraCubeT(),
-            this.createTetraCubeTowerLeft(),
-            this.createTetraCubeTowerRight(),
-            this.createTetraCubeTripod()
+            //this.createTetraCubeL(),
+            //this.createTetraCubeN(),
+            //this.createTetraCubeO(),
+            //this.createTetraCubeT(),
+            //this.createTetraCubeTowerLeft(),
+            //this.createTetraCubeTowerRight(),
+            //this.createTetraCubeTripod()
         ];
     }
 }
