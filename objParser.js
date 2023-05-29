@@ -2,6 +2,8 @@ class OBJParser {
     constructor() {
         this.vecNormals = [];
         this.vertices = [];
+        this.textureVertices = [];
+        this.textureVerticesToBeReturned = [];
 
         //Counter variable for new index
         this.currentIndex = 0;
@@ -30,6 +32,9 @@ class OBJParser {
                 case "v":
                     this.addVertex(this.vertices, elements[1], elements[2], elements[3])
                     break;
+                case "vt":
+                    this.textureVertices.push([parseFloat(elements[1]), parseFloat(elements[2])])
+                    break;
                 case "f":
                     this.processIndices(elements);
                     break;
@@ -40,6 +45,7 @@ class OBJParser {
             vertices: this.sortedVertices,
             normals: this.sortedNormals,
             indices: this.newIndexArray,
+            textures: this.textureVerticesToBeReturned
         };
     }
 
@@ -69,6 +75,13 @@ class OBJParser {
                 const normalIndex = parseInt(index[2]) - 1;
                 this.sortedVertices.push(...this.vertices[vertexIndex]);
                 this.sortedNormals.push(...this.vecNormals[normalIndex]);
+
+                //If texture vertices exist...
+                if(index[1]){
+                    const textureVertex = this.textureVertices[parseInt(index[1])-1];
+                    this.textureVerticesToBeReturned.push(textureVertex[0]);
+                    this.textureVerticesToBeReturned.push(textureVertex[1]);
+                }
 
                 //Create new index entry and mark it as already mapped for the specified triple
                 this.newIndexArray.push(this.currentIndex);
