@@ -18,6 +18,7 @@ class GameLogic {
         this.currentTetraCubeIndex = -1;
         this.tetraCubes = [];
         this.gameIsRunning = true;
+        this.gameOver = false;
     }
 
     generateKey(x, y, z) {
@@ -54,7 +55,7 @@ class GameLogic {
     }
 
     executeGameplayCycle() {
-        if (!this.gameIsRunning) {
+        if (!this.gameIsRunning || this.gameOver) {
             return;
         }
         let gravityResults = this.preventGravityCollision();
@@ -72,9 +73,9 @@ class GameLogic {
                     }
                 }
             }
-
-            this.chooseNextCube();
-
+            if(!this.gameOver){
+                this.chooseNextCube();
+            }
         } else {
             this.translateCurrentTetraCube([0, this.GRAVITY_CONSTANT, 0]);
         }
@@ -112,6 +113,15 @@ class GameLogic {
         }
     }
 
+    restartGame(){
+        this.tetraCubes = [];
+        this.collisionMap = new Map();
+        this.initializeMap();
+        this.currentTetraCubeIndex = -1;
+        this.gameOver = false;
+        this.chooseNextCube();
+    }
+
     deleteAllCubesInLayer(layer) {
         for (let tetromino of this.tetraCubes) {
             let indicesToBeRemoved = [];
@@ -140,11 +150,6 @@ class GameLogic {
                 }
             }
 
-            /*for (const index of indicesToBeTranslated) {
-                tetromino.translateCubeWithIndex(index);
-                let gridCoordinate = this.retrieveRelativeAndGridCoordinates(tetromino.getCubePositionForIndex(index)).gridCoordinate;
-                this.updateCollisionMapCoordinate(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]), true);
-            }*/
             if(indicesToBeTranslated.length){
                 tetromino.translateTetrisShape([0,-0.2,0])
             }
@@ -195,14 +200,23 @@ class GameLogic {
                     glMatrix.vec3.sub(correctionResult, gridCellBeforeCollsion, coordinate.relativeCoordinate);
 
                     translateUpCorrection = correctionResult;
+                    if(coordinate.gridCoordinate[1] >= 12 && !this.gameOver){
+                        this.gameOverScreen();
+                    }
                 }
             });
         });
 
         return {
             collisionOccured: (translateUpCorrection) ? true : false,
-            translateUpCorrection: translateUpCorrection[1]//Math.abs(translateUpCorrection[1])
+            translateUpCorrection: translateUpCorrection[1]
         }
+    }
+
+    gameOverScreen(){
+        this.gameOver = true;
+        restartButton.style.display = "inline-block";
+        alert("Game over!");
     }
 
     getRelativeAndGridCoordsForBorderCoordinatesFromCubeCenter(cubeCenterCoordinates) {

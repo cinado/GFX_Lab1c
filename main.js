@@ -41,8 +41,10 @@ window.onload = async () => {
     // Set up projection matrices and view matrix
     camera = new Camera(canvas.clientWidth / canvas.clientHeight);
 
-    // Temporarily implemented for debugging purposes
-    //coordSys = createCoordinateSystem();
+    restartButton.onclick = function () {
+        gameLogic.restartGame()
+        restartButton.style.display = "none";
+    }
 
     // create shader programs and enable one of them
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
@@ -83,11 +85,11 @@ function render(now) {
     sendUniforms(gl);
 
     //boundingBoxGrid.drawLines();
-    boundingBoxGrid.forEach(boundingBoxSide =>{
+    boundingBoxGrid.forEach(boundingBoxSide => {
         boundingBoxSide.drawLinesIfVisible();
     });
 
-    if(isGridVisible){
+    if (isGridVisible) {
         wireGrid.drawLines();
     }
 
@@ -98,7 +100,7 @@ function render(now) {
     previousSelection.enable();
     sendUniforms(gl);
 
-    gameLogic.tetraCubes.forEach(tetraCube =>{
+    gameLogic.tetraCubes.forEach(tetraCube => {
         tetraCube.draw();
     })
 

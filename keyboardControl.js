@@ -136,12 +136,18 @@ class KeyboardControl {
 }
 
 function checkTranslationForTetromino(translationVector) {
+    if(gameLogic.gameOver){
+        return false;
+    }
     let clonedTetromino = currentTetromino.cloneObject();
     clonedTetromino.translateTetrisShape(translationVector);
     return gameLogic.checkIfTransformationPossible(clonedTetromino);
 }
 
 function checkRotationForTetromino(rotationAngle, axis) {
+    if(gameLogic.gameOver){
+        return false;
+    }
     let clonedTetromino = currentTetromino.cloneObject();
     clonedTetromino.rotateTetrisShape(rotationAngle, axis);
     return gameLogic.checkIfTransformationPossible(clonedTetromino);
