@@ -56,8 +56,8 @@ class Shape {
         if(textureVertices !== null){
             this.textures = new Float32Array((textureVertices.constructor === Float32Array) ? textureVertices : textureVertices.flat());
 
-            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.textureBuffer);
-            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.textures, gl.STATIC_DRAW);
+            gl.bindBuffer(gl.ARRAY_BUFFER, this.buffers.textureBuffer);
+            gl.bufferData(gl.ARRAY_BUFFER, this.textures, gl.STATIC_DRAW);
         }
     }
 
@@ -202,7 +202,7 @@ class Shape {
 
     cloneObject(){
         let clonedShape = new Shape();
-        clonedShape.initData(this.vertices, this.colors, this.normals, this.indexArray);
+        clonedShape.initData(this.vertices, this.colors, this.normals, this.indexArray, this.textures);
         mat4.copy(clonedShape.transformationMatrix, this.transformationMatrix);
         return clonedShape;
     }
