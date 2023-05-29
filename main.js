@@ -14,6 +14,8 @@ window.onload = async () => {
     diffuseProductSlider.addEventListener("input", onSliderValueChanged);
     specularProductSlider.addEventListener("input", onSliderValueChanged);
 
+    restartButton =  document.getElementById("restartButton");
+
 
     /* --------- load obj files --------- */
     const cube = await fetch("/sampleModels/cube.obj").then(response => response.text());
@@ -34,6 +36,7 @@ window.onload = async () => {
     gl.clearColor(0.0, 0.0, 0.0, 1);
 
     await initShaderData();
+    await initTexture();
 
     const program = createShaderProgram(shaderSource.noLight, shaderSource.fragment);
     gl.useProgram(program);

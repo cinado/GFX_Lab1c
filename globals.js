@@ -25,6 +25,11 @@ const shaders = {
     phongSpecularFrag: "phongSpecular.frag",
 }
 
+const textures = {
+    brick: "Brick.png",
+}
+
+let textureSource = {};
 let shaderSource = {};
 
 let currentShaderProgram = null;
@@ -63,6 +68,9 @@ const matrices = {
     projectionMatrix: mat4.create(),
 
 }
+
+// Restart button
+let restartButton = null;
 
 // Sliders for ambient/diffuse/specularProduct
 let ambientProductSlider = null;

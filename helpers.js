@@ -46,6 +46,37 @@ async function initShaderData() {
     }
 }
 
+async function fetchTexture(textureName) {
+    return new Promise((resolve, reject) => {
+        const textureImage = new Image();
+        textureImage.onload = () => {
+            resolve(textureImage);
+        };
+        textureImage.onerror = (error) => {
+            reject(error);
+        };
+        textureImage.src = `textures/${textureName}`;
+    });
+}
+
+
+async function initTexture() {
+    for (const key in textures) {
+        const textureImage = await fetchTexture(textures[key]);
+        const texture = gl.createTexture();
+
+        gl.bindTexture(gl.TEXTURE_2D, texture);
+        gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textureImage);
+
+        gl.generateMipmap(gl.TEXTURE_2D);
+
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+        gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+
+        textureSource[key] = texture;
+    }
+}
+
 function sendUniforms(gl) {
     gl.uniform4fv(currentShaderProgram.uniforms.ambientProduct, ambientProduct);
     gl.uniform4fv(currentShaderProgram.uniforms.diffuseProduct, diffuseProduct);
