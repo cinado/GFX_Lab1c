@@ -3,7 +3,8 @@ class TetrisShape {
         this.cubes = listOfCubes;
         this.tetrisShapeRotationMatrix = mat4.create();
         this.tetrisShapeTranslationMatrix = mat4.create();
-        this.combinedTetrisShapeMatrix = mat4.create()
+        this.combinedTetrisShapeMatrix = mat4.create();
+        this.texture = null;
     }
 
     translateTetrisShape(translationVector) {
@@ -18,8 +19,15 @@ class TetrisShape {
         mat4.mul(this.tetrisShapeRotationMatrix, rotationMatrix, this.tetrisShapeRotationMatrix);
     }
 
+    setTexture(texture){
+        this.texture = texture;
+    }
+
     draw() {
         mat4.mul(this.combinedTetrisShapeMatrix, this.tetrisShapeTranslationMatrix, this.tetrisShapeRotationMatrix);
+        if (this.texture !== null) {
+            gl.bindTexture(gl.TEXTURE_2D, this.texture);
+        }
         this.cubes.forEach(cube => {
             cube.draw(this.combinedTetrisShapeMatrix);
         })
@@ -31,7 +39,7 @@ class TetrisShape {
         clonedTetrisShape.combinedTetrisShapeMatrix = mat4.clone(this.combinedTetrisShapeMatrix);
     }
 
-    getCubePositions(){
+    getCubePositions() {
         let cubePositions = [];
         this.cubes.forEach(cube => {
             //cubePositions.push(cube.getCubeCenterPosition(this.combinedTetrisShapeMatrix));
@@ -40,7 +48,7 @@ class TetrisShape {
         return cubePositions;
     }
 
-    getCubePositionForIndex(index){
+    getCubePositionForIndex(index) {
         return this.cubes[index].getCubeCenterPosition(mat4.mul(mat4.create(), this.tetrisShapeTranslationMatrix, this.tetrisShapeRotationMatrix));
     }
 

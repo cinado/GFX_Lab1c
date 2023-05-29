@@ -51,14 +51,20 @@ window.onload = async () => {
 
     // create shader programs and enable one of them
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
-    shaderPrograms.gouraudSpecular = new ShaderProgram(shaderSource.gouraudSpecular, shaderSource.fragment, shaderInfo);
+    //shaderPrograms.gouraudSpecular = new ShaderProgram(shaderSource.gouraudSpecular, shaderSource.fragment, shaderInfo);
+    shaderPrograms.gouraudSpecular = new ShaderProgram(shaderSource.gouraudSpecular, shaderSource.gouraudFragment, shaderInfo);
     shaderPrograms.phongSpecular = new ShaderProgram(shaderSource.phongVert, shaderSource.phongSpecularFrag, shaderInfo);
 
     shaderPrograms.phongSpecular.enable();
 
     tetraCubeSelection = shapeCreator.createTetraCubeSelection();
 
-    gameLogic = new GameLogic(tetraCubeSelection);
+    let textures = [];
+    for (const key in textureSource) {
+        textures.push(textureSource[key]);
+    }
+
+    gameLogic = new GameLogic(tetraCubeSelection, textures);
 
     gameLogic.chooseNextCube();
 
@@ -216,7 +222,7 @@ function parseAndCreateShape(objFile) {
 
     /* --------- create shape object and initialize data --------- */
     const shape = new Shape();
-    shape.initData(parsedShape.vertices, colors, parsedShape.normals, parsedShape.indices);
+    shape.initData(parsedShape.vertices, colors, parsedShape.normals, parsedShape.indices, parsedShape.textures);
 
     return shape;
 }

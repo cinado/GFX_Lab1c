@@ -3,6 +3,7 @@ precision mediump float;
 attribute vec4 vertexPosition;
 attribute vec4 vertexColor;
 attribute vec3 vertexNormal;
+attribute vec2 vertexTexture;
 
 uniform mat4 modelViewMatrix;
 uniform mat4 viewMatrix;
@@ -15,6 +16,7 @@ uniform vec4 u_specularProduct;
 uniform float u_shininess;
 
 varying vec4 fragmentColor;
+varying vec2 texCoordinates;
 
 void main() {
     // Transform vertex position to view space
@@ -36,6 +38,8 @@ void main() {
     float specularIntensity = pow(max(dot(r_reflectionVector, v_CamerDirection), 0.0), u_shininess);
 
     vec4 spec = u_specularProduct * specularIntensity;
+
+    texCoordinates = vertexTexture;
 
     gl_Position = projectionMatrix * viewPosition; 
     // Multiply vertex color with lightIntensity

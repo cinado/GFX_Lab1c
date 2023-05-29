@@ -4,6 +4,7 @@ class Shape {
         this.vertices = [];
         this.colors = [];
         this.normals = [];
+        this.textures = [];
 
         /* Optional index array for drawing shapes with indices */
         this.indexArray = null;
@@ -14,6 +15,7 @@ class Shape {
             colorBuffer: gl.createBuffer(),
             normalBuffer: gl.createBuffer(),
             indexBuffer: gl.createBuffer(),
+            textureBuffer: gl.createBuffer(),
         }
 
         // initialize transformation and normal matrix
@@ -21,7 +23,7 @@ class Shape {
         this.normalMatrix = mat3.create();
     }
 
-    initData(vertices, colors, normals, indexArray = null) {
+    initData(vertices, colors, normals, indexArray = null, textureVertices = null) {
         /* --------- flatten & convert data to 32 bit float arrays --------- */
 
         console.log(vertices);
@@ -50,6 +52,13 @@ class Shape {
             gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.indexBuffer);
             gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.indexArray, gl.STATIC_DRAW);
         }
+
+        if(textureVertices !== null){
+            this.textures = new Float32Array((textureVertices.constructor === Float32Array) ? textureVertices : textureVertices.flat());
+
+            gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, this.buffers.textureBuffer);
+            gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, this.textures, gl.STATIC_DRAW);
+        }
     }
 
     draw(combinedTetrisShapeMatrix) {
@@ -57,6 +66,10 @@ class Shape {
         Shape.setupAttribute(this.buffers.vertexBuffer, currentShaderProgram.attributes.vertexLocation);
         Shape.setupAttribute(this.buffers.colorBuffer, currentShaderProgram.attributes.colorLocation);
         Shape.setupAttribute(this.buffers.normalBuffer, currentShaderProgram.attributes.normalLocation, true);
+
+        if(this.textures !== null){
+            Shape.setupTextures(this.buffers.textureBuffer, currentShaderProgram.attributes.textureLocation);
+        }
 
         /* --------- combine view and model matrix into modelView matrix --------- */
 
@@ -215,6 +228,25 @@ class Shape {
             gl.FLOAT, // type of the attributes
             gl.FALSE, // is data normalised?
             (isNormal ? 3 : 4) * Float32Array.BYTES_PER_ELEMENT, // size for one vertex
+            0 // offset from begin of vertex to the attribute
+        );
+
+        // enable the attribute
+        gl.enableVertexAttribArray(location);
+    }
+
+    static setupTextures(buffer, location) {
+
+        if (location === -1 || location === undefined) { return; }
+
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+
+        gl.vertexAttribPointer(
+            location, // the attribute location
+            2, // number of elements for each attribute/vertex
+            gl.FLOAT, // type of the attributes
+            gl.FALSE, // is data normalised?
+            0, // size for one vertex
             0 // offset from begin of vertex to the attribute
         );
 

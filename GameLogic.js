@@ -9,7 +9,7 @@ const zOffset = glMatrix.vec3.fromValues(0, 0, HALF_CUBE_LENGTH - CORRECTION_FAC
 class GameLogic {
     GRAVITY_CONSTANT = -0.004;
 
-    constructor(tetraCubeSelection) {
+    constructor(tetraCubeSelection, textures) {
         this.tetraCubeSelection = tetraCubeSelection;
 
         this.collisionMap = new Map();
@@ -19,6 +19,7 @@ class GameLogic {
         this.tetraCubes = [];
         this.gameIsRunning = true;
         this.gameOver = false;
+        this.textures = textures;
     }
 
     generateKey(x, y, z) {
@@ -43,7 +44,14 @@ class GameLogic {
         let chosenTetraCube = this.tetraCubeSelection[Math.floor(Math.random() * this.tetraCubeSelection.length)];
         this.currentTetraCubeIndex++;
         this.tetraCubes.push(chosenTetraCube.cloneObject());
+        if(this.currentTetraCubeIndex%5 == 0){
+            this.getCurrentTetraCube().setTexture(this.getRandomTexture());
+        }
         this.GRAVITY_CONSTANT = -0.004;
+    }
+
+    getRandomTexture(){
+        return this.textures[Math.floor(Math.random() * this.textures.length)];
     }
 
     translateCurrentTetraCube(translationVector) {

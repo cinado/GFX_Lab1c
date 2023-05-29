@@ -1,5 +1,5 @@
 1. Claim section:
-    Almost all Tasks (T7 - only fetching textures and parsing vt) (T1, T2, T3, T4, T5, T6, T8) were implemented.
+    Almost all Tasks (T7 - only fetching textures, parsing vt, adjusted classes to handle textures and implemented textures in gouraud shader, however doesn't work) (T1, T2, T3, T4, T5, T6, T8) were implemented.
 2. Tested environments:
     OS: Windows 10
     Tested on Brave (v. 1.49.132) and Microsoft Edge (v. 111.0.1661.54)

@@ -23,6 +23,7 @@ const shaders = {
     fragment: "f-shader.frag",
     phongVert: "phong.vert",
     phongSpecularFrag: "phongSpecular.frag",
+    gouraudFragment: "gouraudFragment.frag"
 }
 
 const textures = {
@@ -40,7 +41,8 @@ const shaderInfo = {
 
         vertexLocation: "vertexPosition",
         colorLocation: "vertexColor",
-        normalLocation: "vertexNormal"
+        normalLocation: "vertexNormal",
+        textureLocation: "vertexTexture"
 
     }, uniforms: {
 
