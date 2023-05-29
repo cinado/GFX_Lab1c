@@ -42,7 +42,7 @@ window.onload = async () => {
     camera = new Camera(canvas.clientWidth / canvas.clientHeight);
 
     // Temporarily implemented for debugging purposes
-    coordSys = createCoordinateSystem();
+    //coordSys = createCoordinateSystem();
 
     // create shader programs and enable one of them
     shaderPrograms.noLightProgram = new ShaderProgram(shaderSource.noLight, shaderSource.fragment, shaderInfo);
@@ -91,7 +91,7 @@ function render(now) {
         wireGrid.drawLines();
     }
 
-    coordSys.drawLines();
+    //coordSys.drawLines();
 
     // Switch back to phong/gouraud
 

@@ -63,8 +63,14 @@ class GameLogic {
             this.translateCurrentTetraCube([0, gravityResults.translateUpCorrection, 0]);
             this.registerTetrominoInCollisionMap(this.getCurrentTetraCube());
             let layerOrFailed = this.checkIfPlaneIsCovered();
-            if(layerOrFailed != -1){
+            if (layerOrFailed != -1) {
                 this.deleteAllCubesInLayer(layerOrFailed);
+                for (let i = 0; i < 12; i++) {
+                    layerOrFailed = this.checkIfPlaneIsCovered();
+                    if (layerOrFailed != -1) {
+                        this.deleteAllCubesInLayer(layerOrFailed);
+                    }
+                }
             }
 
             this.chooseNextCube();
@@ -106,24 +112,52 @@ class GameLogic {
         }
     }
 
-    deleteAllCubesInLayer(layer){
-        for(let tetromino of this.tetraCubes){
+    deleteAllCubesInLayer(layer) {
+        for (let tetromino of this.tetraCubes) {
             let indicesToBeRemoved = [];
-            for(let i = 0; i < tetromino.cubes.length; i++){
+            for (let i = 0; i < tetromino.cubes.length; i++) {
                 let gridCoordinate = this.retrieveRelativeAndGridCoordinates(tetromino.getCubePositionForIndex(i)).gridCoordinate;
-                if(gridCoordinate[1] == layer){
+                if (gridCoordinate[1] == layer) {
                     indicesToBeRemoved.push(i);
-                    this.updateCollisionMapCoordinateToFalse(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]));
+                    this.updateCollisionMapCoordinate(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]), false);
                 }
             }
             const indicesToBeFiltered = new Set(indicesToBeRemoved);
             const filteredArray = tetromino.cubes.filter((_, index) => !indicesToBeFiltered.has(index));
             tetromino.cubes = filteredArray;
         }
+        this.translateAllCubesAfterLayerRemoval(layer);
     }
 
-    updateCollisionMapCoordinateToFalse(key){
-        this.collisionMap.set(key, false);
+    translateAllCubesAfterLayerRemoval(layer) {
+        for (let tetromino of this.tetraCubes) {
+            let indicesToBeTranslated = [];
+            for (let i = 0; i < tetromino.cubes.length; i++) {
+                let gridCoordinate = this.retrieveRelativeAndGridCoordinates(tetromino.getCubePositionForIndex(i)).gridCoordinate;
+                if (gridCoordinate[1] > layer) {
+                    indicesToBeTranslated.push(i);
+                    this.updateCollisionMapCoordinate(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]), false);
+                }
+            }
+
+            /*for (const index of indicesToBeTranslated) {
+                tetromino.translateCubeWithIndex(index);
+                let gridCoordinate = this.retrieveRelativeAndGridCoordinates(tetromino.getCubePositionForIndex(index)).gridCoordinate;
+                this.updateCollisionMapCoordinate(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]), true);
+            }*/
+            if(indicesToBeTranslated.length){
+                tetromino.translateTetrisShape([0,-0.2,0])
+            }
+
+            for(let i = 0; i < tetromino.cubes.length; i++){
+                let gridCoordinate = this.retrieveRelativeAndGridCoordinates(tetromino.getCubePositionForIndex(i)).gridCoordinate;
+                this.updateCollisionMapCoordinate(this.generateKey(gridCoordinate[0], gridCoordinate[1], gridCoordinate[2]), true);
+            }
+        }
+    }
+
+    updateCollisionMapCoordinate(key, value) {
+        this.collisionMap.set(key, value);
     }
 
     preventGravityCollision() {
@@ -173,7 +207,7 @@ class GameLogic {
 
     getRelativeAndGridCoordsForBorderCoordinatesFromCubeCenter(cubeCenterCoordinates) {
         let relativeAndGridCoordinates = [];
-        cubeCenterCoordinates.forEach(cubeCenterCoordinate =>{
+        cubeCenterCoordinates.forEach(cubeCenterCoordinate => {
             this.getCubeBorderCoordinatesFromCenter(cubeCenterCoordinate).flat().forEach(borderCoordinate => {
                 const result = this.retrieveRelativeAndGridCoordinates(borderCoordinate);
                 relativeAndGridCoordinates.push(result);
@@ -189,9 +223,9 @@ class GameLogic {
     checkIfTransformationPossible(clonedTetromino) {
         let relativeAndGridCoordinates = this.getRelativeAndGridCoordsForBorderCoordinatesFromCubeCenter(clonedTetromino.getCubePositions());
 
-        for(const coordinate of relativeAndGridCoordinates) {
+        for (const coordinate of relativeAndGridCoordinates) {
             //Check if transformation causes collision with any tetromino
-            if(this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))){
+            if (this.collisionMap.get(this.generateKey(coordinate.gridCoordinate[0], coordinate.gridCoordinate[1], coordinate.gridCoordinate[2]))) {
                 return false;
             }
             //Check if transformation would result in leaving the grid
@@ -201,7 +235,7 @@ class GameLogic {
                 }
             }
             //Check if transformation would result in leaving the grid
-            if(coordinate.gridCoordinate[0] > 3 || coordinate.gridCoordinate[2] > 3){
+            if (coordinate.gridCoordinate[0] > 3 || coordinate.gridCoordinate[2] > 3) {
                 return false;
             }
         }
@@ -217,18 +251,18 @@ class GameLogic {
         })
     }
 
-    checkIfPlaneIsCovered(){
-        let mapEachLayer = Array.from({length:12}, () => []);
-        for(let y = 0; y < 12; y++){
-            for(let x = 0; x < 4; x++){
-                for(let z = 0; z < 4; z++){
-                    mapEachLayer[y].push(this.collisionMap.get(this.generateKey(x,y,z)))
+    checkIfPlaneIsCovered() {
+        let mapEachLayer = Array.from({ length: 12 }, () => []);
+        for (let y = 0; y < 12; y++) {
+            for (let x = 0; x < 4; x++) {
+                for (let z = 0; z < 4; z++) {
+                    mapEachLayer[y].push(this.collisionMap.get(this.generateKey(x, y, z)))
                 }
             }
         }
 
-        for(let i = 0; i < 12; i++){
-            if(mapEachLayer[i].every(value => value === true)){
+        for (let i = 0; i < 12; i++) {
+            if (mapEachLayer[i].every(value => value === true)) {
                 return i;
             }
         }

@@ -18,9 +18,8 @@ class ShapeCreator {
         this.cylinderShape = cylinderShape;
         this.isCubeShapeSelected = true;
         this.currenShape = cubeShape;
-        //this.cubeShape.scale([0.2,0.2,0.2]);
     }
-    
+
     createBoundingBoxGrid() {
         let vertices = [];
 
@@ -72,7 +71,7 @@ class ShapeCreator {
         glMatrix.vec4.add(pointP, pointP, yValueOffset);
         glMatrix.vec4.add(pointQ, pointQ, yValueOffset);
 
-        //Left wall - add vertices for horizontal lines
+        //Left wall - add vertices for vertical lines
         for (let i = 0; i < 12; i++) {
             vertices.push([pointP[0], pointP[1], pointP[2], pointP[3]]);
             vertices.push([pointQ[0], pointQ[1], pointQ[2], pointQ[3]]);
@@ -99,6 +98,7 @@ class ShapeCreator {
         this.resetPointsBoundingBoxGrid();
 
         const colors = [];
+
 
         vertices.forEach(() => {
             colors.push(WHITE_COLOUR_RGBA);
@@ -192,11 +192,6 @@ class ShapeCreator {
     createTetraCubeI(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        
-        /*cubeList[0].translate([-1,0,0.0]);
-        cubeList[1].translate([0.0,0,0.0]);
-        cubeList[2].translate([1,0,0.0]);
-        cubeList[3].translate([2,0,0.0]);*/
 
         cubeList[0].global_translation([-1*cubeLength,0,0.0]);
         cubeList[1].global_translation([0.0,0,0.0]);
@@ -213,10 +208,6 @@ class ShapeCreator {
     createTetraCubeO(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0.0,0,0.0]);
-        cubeList[1].translate([1,0,0.0]);
-        cubeList[2].translate([0.0,1,0.0]);
-        cubeList[3].translate([1,1,0.0]);*/
 
         cubeList[0].global_translation([0,0,0.0]);
         cubeList[1].global_translation([1*cubeLength,0,0.0]);
@@ -234,10 +225,6 @@ class ShapeCreator {
     createTetraCubeL(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0.0,0,0.0]);
-        cubeList[1].translate([0.0,0,1]);
-        cubeList[2].translate([0.0,1,0.0]);
-        cubeList[3].translate([0.0,2,0.0]);*/
 
         cubeList[0].global_translation([0,0,0.0]);
         cubeList[1].global_translation([0,0,1*cubeLength]);
@@ -254,10 +241,6 @@ class ShapeCreator {
     createTetraCubeT(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0.0,0,0.0]);
-        cubeList[1].translate([0.0,1,0.0]);
-        cubeList[2].translate([0.0,1,1]);
-        cubeList[3].translate([0.0,2,0.0]);*/
 
         cubeList[0].global_translation([0,0,0]);
         cubeList[1].global_translation([0,1*cubeLength,0]);
@@ -275,10 +258,6 @@ class ShapeCreator {
     createTetraCubeN(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0.0,0,0.0]);
-        cubeList[1].translate([0.0,1,0.0]);
-        cubeList[2].translate([-1,1,0.0]);
-        cubeList[3].translate([-1,2,0.0]);*/
 
         cubeList[0].global_translation([0,0,0.0]);
         cubeList[1].global_translation([0,1*cubeLength,0]);
@@ -295,10 +274,6 @@ class ShapeCreator {
     createTetraCubeTowerRight(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0,0,0]);
-        cubeList[1].translate([1,0,0]);
-        cubeList[2].translate([1,0,-1]);
-        cubeList[3].translate([1,1,-1]);*/
 
         cubeList[0].global_translation([0,0,0.0]);
         cubeList[1].global_translation([1*cubeLength,0,0]);
@@ -315,10 +290,6 @@ class ShapeCreator {
     createTetraCubeTowerLeft(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0,0,-1]);
-        cubeList[1].translate([0,1,-1]);
-        cubeList[2].translate([0,0,0]);
-        cubeList[3].translate([1,0,0]);*/
 
         cubeList[0].global_translation([0,0,-1*cubeLength]);
         cubeList[1].global_translation([0,1*cubeLength,-1*cubeLength]);
@@ -336,10 +307,6 @@ class ShapeCreator {
     createTetraCubeTripod(){
         let cubeList = [];
         this.initializeCubeList(cubeList);
-        /*cubeList[0].translate([0,0,-1]);
-        cubeList[1].translate([0,1,-1]);
-        cubeList[2].translate([0,0,0]);
-        cubeList[3].translate([1,0,-1]);*/
 
         cubeList[0].global_translation([0,0,-1*cubeLength]);
         cubeList[1].global_translation([0,1*cubeLength,-1*cubeLength]);
@@ -375,13 +342,13 @@ class ShapeCreator {
     createTetraCubeSelection(){
         return [
             this.createTetraCubeI(),
-            //this.createTetraCubeL(),
-            //this.createTetraCubeN(),
-            //this.createTetraCubeO(),
-            //this.createTetraCubeT(),
-            //this.createTetraCubeTowerLeft(),
-            //this.createTetraCubeTowerRight(),
-            //this.createTetraCubeTripod()
+            this.createTetraCubeL(),
+            this.createTetraCubeN(),
+            this.createTetraCubeO(),
+            this.createTetraCubeT(),
+            this.createTetraCubeTowerLeft(),
+            this.createTetraCubeTowerRight(),
+            this.createTetraCubeTripod()
         ];
     }
 }
